@@ -18,5 +18,9 @@ public class APIConstant {
 	public static final String UPDATE_STATUS = "User update status";
 	public static final String USER_ROLE_NOT_EXISTS = "User role not exists";
 	public static final String LINE_MANAGER_IS_STATUS = "Line manager is not exists/Line manager status is inactive";
+	public static final String USER_CONTROLLER_DESCRIPTON = "OPERATIONS PERTAINING TO BOSTON USER";
+	public static final String USER_CONTROLLER_TAG = "user controller APIs";
+	public static final String STATUS_RESPONSE = "status respose";
+	public static final String USER_STATUS_CHANGE = "user status successfully change";
 
 }

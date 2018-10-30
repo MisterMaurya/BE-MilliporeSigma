@@ -2,6 +2,9 @@ package com.be.millipore.service;
 
 import java.util.List;
 
+import org.json.JSONException;
+import org.springframework.http.ResponseEntity;
+
 import com.be.millipore.beans.User;
 
 public interface UserService {
@@ -14,13 +17,16 @@ public interface UserService {
 
 	public User findByUserId(String userId);
 
-	public List<User> getAllUser();
+	public List<User> findAll();
 
-	public User getUser(Long id);
+	public User findById(Long id);
 
 	public void updateUser(Long id);
 
-	public void deleteUser(Long id, User user);
-
 	public User getLineManager(Long lineManagerId);
+
+	public void changeStatus(User user);
+
+	public ResponseEntity<?> validateUser(User user) throws JSONException;
+
 }
