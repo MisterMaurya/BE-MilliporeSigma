@@ -25,7 +25,7 @@ public interface UserService {
 
 	public User getLineManager(Long lineManagerId);
 
-	public void changeStatus(User user);
+	public ResponseEntity<?> changeStatus(User user) throws JSONException;
 
 	public ResponseEntity<?> validateUser(User user) throws JSONException;
 

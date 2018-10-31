@@ -36,6 +36,7 @@ public class APIConstant {
 	public static final String REST_USER_ROLE = "/role";
 	public static final String ACTIVE_USERS = "/allActive";
 	public static final String ALL_ACTIVE_MANAGER = "/allActiveManager";
+	public static final String USER_STATUS = "status";
 
 //*** USER API OPERATIONS ***//	
 
@@ -49,5 +50,6 @@ public class APIConstant {
 
 	public static final String GET_ALL_USER_ROLE = "Get All User Role";
 	public static final String GET_ALL_ACIVE_USER = "Get All Active User";
-
+	public static final String USER_IS_ENABLE = "User is status enable";
+	public static final String USER_IS_DISABLE = "User is status  disable";
 }

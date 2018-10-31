@@ -115,9 +115,8 @@ public class UserController {
 					jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.USER_NOT_EXISTS).toString(),
 					HttpStatus.BAD_REQUEST);
 		}
-		userService.changeStatus(user);
-		return new ResponseEntity<>(
-				jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.USER_STATUS_CHANGE).toString(), HttpStatus.OK);
+
+		return userService.changeStatus(user);
 	}
 
 // (6). GET ALL ACTIVE LINE MANAGER

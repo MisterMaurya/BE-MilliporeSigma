@@ -98,13 +98,21 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void changeStatus(User user) {
+	public ResponseEntity<?> changeStatus(User user) throws JSONException {
+		JSONObject jsonObject = new JSONObject();
+
 		if (user.getStatus().equals("Y")) {
 			user.setStatus("N");
+			userRepo.save(user);
+			return new ResponseEntity<>(jsonObject.put(APIConstant.USER_STATUS, APIConstant.USER_IS_DISABLE).toString(),
+					HttpStatus.OK);
 		} else {
 			user.setStatus("Y");
+			userRepo.save(user);
+			return new ResponseEntity<>(jsonObject.put(APIConstant.USER_STATUS, APIConstant.USER_IS_ENABLE).toString(),
+					HttpStatus.OK);
 		}
-		userRepo.save(user);
+
 	}
 
 	@Override
@@ -179,6 +187,8 @@ public class UserServiceImpl implements UserService {
 		boolean isExists = false;
 		JSONObject jsonObject = new JSONObject();
 
+		List<UserRole> userRoles = new ArrayList<>();
+
 		isExists = userRepo.findById(id).isPresent();
 		if (isExists == false) {
 			return null;
@@ -194,6 +204,11 @@ public class UserServiceImpl implements UserService {
 		jsonObject.put("mobile", user.getMobile());
 		jsonObject.put("lineManageId", user.getLineManageId());
 		jsonObject.put("status", user.getStatus());
+		for (UserRole userRole : user.getRole()) {
+			userRoles.add(userRole);
+		}
+		jsonObject.put("role", userRoles);
+
 		return jsonObject;
 	}
 
