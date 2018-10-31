@@ -29,4 +29,5 @@ public interface UserService {
 
 	public ResponseEntity<?> validateUser(User user) throws JSONException;
 
+	public List<User> getAllActiveManager();
 }

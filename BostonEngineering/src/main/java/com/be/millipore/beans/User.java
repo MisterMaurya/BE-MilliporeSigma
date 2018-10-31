@@ -25,7 +25,7 @@ public class User {
 	private String countryCode;
 	private String mobile;
 	private Long lineManageId;
-	private String status; // provide 0 for inactive and provide 1 for active
+	private String status;
 
 	private Set<UserRole> role = new HashSet<UserRole>(0);
 

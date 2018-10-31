@@ -159,4 +159,42 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
+	@Override
+	public List<User> getAllActiveManager() {
+		List<User> activeManager = new ArrayList<>();
+		for (User user : userRepo.findAll()) {
+			if (user.getStatus().equals("Y")) {
+				for (UserRole userRole : user.getRole()) {
+					if (userRole.getUserRole().equals("Manager")) {
+						activeManager.add(user);
+					}
+				}
+			}
+
+		}
+		return activeManager;
+	}
+
+	public JSONObject getOneUser(Long id) throws JSONException {
+		boolean isExists = false;
+		JSONObject jsonObject = new JSONObject();
+
+		isExists = userRepo.findById(id).isPresent();
+		if (isExists == false) {
+			return null;
+		}
+		User user = userRepo.findById(id).get();
+		jsonObject.put("id", user.getId());
+		jsonObject.put("userId", user.getUserId());
+		jsonObject.put("email", user.getEmail());
+		jsonObject.put("fullName", user.getFullName());
+		jsonObject.put("title", user.getTitle());
+		jsonObject.put("department", user.getDepartment());
+		jsonObject.put("countryCode", user.getCountryCode());
+		jsonObject.put("mobile", user.getMobile());
+		jsonObject.put("lineManageId", user.getLineManageId());
+		jsonObject.put("status", user.getStatus());
+		return jsonObject;
+	}
+
 }

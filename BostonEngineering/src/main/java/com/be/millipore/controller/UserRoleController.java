@@ -3,44 +3,31 @@ package com.be.millipore.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.be.millipore.apiconstant.APIConstant;
 import com.be.millipore.beans.UserRole;
-import com.be.millipore.repository.UserRoleRepo;
+import com.be.millipore.service.UserRoleService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping("/boston/user")
-@Api(description = "Operations pertaining to boston user role")
+@RequestMapping(value = APIConstant.REST_BASE_URL + APIConstant.REST_USER_URL + APIConstant.REST_USER_ROLE)
+@Api(tags = { APIConstant.USER_ROLE_CONTROLLER_TAG })
 public class UserRoleController {
 	@Autowired
-	private UserRoleRepo userRoleRepo;
+	private UserRoleService userRoleService;
 
-	// Add Role for user
+//**** GET ALL ROLE LIST ****//
 
-	@ApiOperation(value = "Insert Role")
-	@RequestMapping(value = "/user/role", method = RequestMethod.POST)
-	public ResponseEntity<?> saveUserRole(@RequestBody UserRole userRole, BindingResult res) {
-
-		userRoleRepo.save(userRole);
-		return new ResponseEntity<>("Successfully role add", HttpStatus.OK);
-
-	}
-
-	// Get All Role List
-
-	@ApiOperation(value = "Get All Role")
-	@RequestMapping(value = "/get/role/list", method = RequestMethod.GET, produces = "application/json")
+	@ApiOperation(value = APIConstant.GET_ALL_USER_ROLE)
+	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<UserRole> getUserRoleList() {
-		return (List<UserRole>) userRoleRepo.findAll();
+		return userRoleService.findALLUserRole();
 	}
 
 }

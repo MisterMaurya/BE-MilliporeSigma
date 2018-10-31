@@ -14,22 +14,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.be.millipore.apiconstant.APIConstant;
 import com.be.millipore.beans.User;
-import com.be.millipore.service.UserService;
+import com.be.millipore.beans.UserRole;
+import com.be.millipore.service.impl.UserServiceImpl;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping("/boston/user")
+@RequestMapping(value = APIConstant.REST_BASE_URL + APIConstant.REST_USER_URL)
 @Api(tags = { APIConstant.USER_CONTROLLER_TAG })
 public class UserController {
 
 	@Autowired
-	private UserService userService;
+	private UserServiceImpl userService;
 
 // (1). ****** CREATE A NEW USER ****//
 
-	@ApiOperation(value = "Create a New User")
+	@ApiOperation(value = APIConstant.USER_CREATE)
 	@RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> createUser(@RequestBody User user) throws JSONException {
 		JSONObject jsonObject = new JSONObject();
@@ -38,6 +39,7 @@ public class UserController {
 			return responseEntity;
 		}
 		user.setStatus("Y");
+
 		userService.save(user);
 
 		return new ResponseEntity<>(
@@ -48,8 +50,8 @@ public class UserController {
 
 // (2). ****** UPDATE A USER ****//	
 
-	@ApiOperation(value = "Update a user")
-	@RequestMapping(value = "{id}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = APIConstant.USER_UPDATE)
+	@RequestMapping(value = APIConstant.REST_ID_PARAM, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) throws JSONException {
 
 		JSONObject jsonObject = new JSONObject();
@@ -66,33 +68,44 @@ public class UserController {
 
 // (3). ****** GET ONE USER ****//
 
-	@ApiOperation(value = "Get A User Details")
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = APIConstant.GET_ONE_USER)
+	@RequestMapping(value = APIConstant.REST_ID_PARAM, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getUser(@PathVariable Long id) throws JSONException {
 		User existingUser = null;
 		JSONObject jsonObject = new JSONObject();
 		existingUser = userService.findById(id);
 		if (existingUser == null) {
-			return new ResponseEntity<>(
-					jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.USER_NOT_EXISTS).toString(),
-					HttpStatus.BAD_REQUEST);
+
+			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.USER_NOT_EXISTS);
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
+		}
+		jsonObject = userService.getOneUser(id);
+		for (UserRole userRole : existingUser.getRole()) {
+			if (userRole.getUserRole().equals("Operator")) {
+				User getManagerDetails = userService.findById(existingUser.getLineManageId());
+				jsonObject.put("Manager Name", getManagerDetails.getFullName());
+				jsonObject.put("Manager Email", getManagerDetails.getEmail());
+				jsonObject.put("Manager Mobile", getManagerDetails.getMobile());
+
+			}
 		}
 
-		return new ResponseEntity<>(existingUser, HttpStatus.OK);
+		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
 	}
 
 // (4). ****** GET LIST OF ALL USER  ****//
 
-	@ApiOperation(value = "All user list")
-	@RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = APIConstant.GET_ALL_USER)
+	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getAllUser() {
 		return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
 	}
 
 // (5). ****** CHANGE USER STATUS ****//
 
-	@ApiOperation(value = "Change User Status")
-	@RequestMapping(value = "/status/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = APIConstant.CHANGE_STATUS)
+	@RequestMapping(value = APIConstant.REST_ID_STATUS
+			+ APIConstant.REST_ID_PARAM, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> changeUserStatus(@PathVariable Long id) throws JSONException {
 		User user = null;
 		JSONObject jsonObject = new JSONObject();
@@ -105,6 +118,14 @@ public class UserController {
 		userService.changeStatus(user);
 		return new ResponseEntity<>(
 				jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.USER_STATUS_CHANGE).toString(), HttpStatus.OK);
+	}
+
+// (6). GET ALL ACTIVE LINE MANAGER
+
+	@ApiOperation(value = APIConstant.GET_ALL_ACIVE_USER)
+	@RequestMapping(value = APIConstant.ALL_ACTIVE_MANAGER, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> getAllActiveManager() {
+		return new ResponseEntity<>(userService.getAllActiveManager(), HttpStatus.OK);
 	}
 
 }

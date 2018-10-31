@@ -30,9 +30,10 @@ public class SwaggerConfig {
 	@Bean
 	public Docket bostonApi() {
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
-				.tags(new Tag(APIConstant.USER_CONTROLLER_TAG, APIConstant.USER_CONTROLLER_DESCRIPTON)).select()
-				.apis(RequestHandlerSelectors.basePackage("com.be.millipore.controller"))
-				.paths(PathSelectors.regex(".*")).build();
+				.tags(new Tag(APIConstant.USER_CONTROLLER_TAG, APIConstant.USER_CONTROLLER_DESCRIPTON),
+						new Tag(APIConstant.USER_ROLE_CONTROLLER_TAG, APIConstant.USER_ROLE_CONTROLLER_DESCRIPTON))
+				.select().apis(RequestHandlerSelectors.basePackage("com.be.millipore.controller"))
+				.paths(PathSelectors.regex(APIConstant.REST_BASE_URL + ".*")).build();
 	}
 
 }
