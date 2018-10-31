@@ -3,6 +3,7 @@ package com.be.millipore.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,7 +123,9 @@ public class UserServiceImpl implements UserService {
 
 		existingUser = findByEmail(user.getEmail());
 
-		if (existingUser != null) {
+		//
+
+		if (existingUser.getEmail() != null && existingUser.getId() != user.getId()) {
 			return new ResponseEntity<String>(
 					jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.EMAIL_ALREADY_EXISTS).toString(),
 					HttpStatus.BAD_REQUEST);
@@ -131,7 +134,7 @@ public class UserServiceImpl implements UserService {
 
 		existingUser = findByMobile(user.getMobile());
 
-		if (existingUser != null) {
+		if (existingUser != null && existingUser.getId() != user.getId()) {
 
 			return new ResponseEntity<String>(
 					jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.MOBILE_NO_ALREADY_EXISTS).toString(),
@@ -140,7 +143,7 @@ public class UserServiceImpl implements UserService {
 
 		existingUser = findByUserId(user.getUserId());
 
-		if (existingUser != null) {
+		if (existingUser != null && existingUser.getId() != user.getId()) {
 			return new ResponseEntity<>(
 					jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.USERID_ALREADY_EXISTS).toString(),
 					HttpStatus.BAD_REQUEST);
@@ -189,9 +192,9 @@ public class UserServiceImpl implements UserService {
 	public JSONObject getOneUser(Long id) throws JSONException {
 		boolean isExists = false;
 		JSONObject jsonObject = new JSONObject();
+		JSONObject jsonObject2 = new JSONObject();
 
-		List<UserRole> userRoles = new ArrayList<>();
-
+		JSONArray jsonArray = new JSONArray();
 		isExists = userRepo.findById(id).isPresent();
 		if (isExists == false) {
 			return null;
@@ -208,9 +211,10 @@ public class UserServiceImpl implements UserService {
 		jsonObject.put("lineManageId", user.getLineManageId());
 		jsonObject.put("status", user.getStatus());
 		for (UserRole userRole : user.getRole()) {
-			userRoles.add(userRole);
+			jsonObject2.put("userRole", userRole.getUserRole());
 		}
-		jsonObject.put("role", userRoles);
+		jsonArray.put(jsonObject2);
+		jsonObject.put("role", jsonArray);
 
 		return jsonObject;
 	}

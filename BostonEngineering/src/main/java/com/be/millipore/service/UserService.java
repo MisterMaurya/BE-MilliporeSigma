@@ -32,6 +32,6 @@ public interface UserService {
 
 	public List<User> getAllActiveManager(); // Return All Manager have status Active('Y')
 
-	JSONObject getOneUser(Long id) throws JSONException; // get One user if user role is operator
+	JSONObject getOneUser(Long id) throws JSONException; // get One user with additional details
 
 }
