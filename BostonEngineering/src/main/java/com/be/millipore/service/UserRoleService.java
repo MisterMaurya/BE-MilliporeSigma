@@ -5,6 +5,7 @@ import java.util.List;
 import com.be.millipore.beans.UserRole;
 
 public interface UserRoleService {
-	public List<UserRole> findALLUserRole();
+
+	public List<UserRole> findAllUserRole();
 
 }

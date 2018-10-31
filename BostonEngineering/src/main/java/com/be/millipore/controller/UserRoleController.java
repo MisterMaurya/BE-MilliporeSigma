@@ -27,7 +27,7 @@ public class UserRoleController {
 	@ApiOperation(value = APIConstant.GET_ALL_USER_ROLE)
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<UserRole> getUserRoleList() {
-		return userRoleService.findALLUserRole();
+		return userRoleService.findAllUserRole();
 	}
 
 }

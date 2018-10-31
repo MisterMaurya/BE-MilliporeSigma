@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.be.millipore.apiconstant.APIConstant;
 import com.be.millipore.beans.User;
 import com.be.millipore.beans.UserRole;
-import com.be.millipore.service.impl.UserServiceImpl;
+import com.be.millipore.service.UserService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,7 +26,7 @@ import io.swagger.annotations.ApiOperation;
 public class UserController {
 
 	@Autowired
-	private UserServiceImpl userService;
+	private UserService userService;
 
 // (1). ****** CREATE A NEW USER ****//
 
@@ -38,10 +38,7 @@ public class UserController {
 		if (responseEntity != null) {
 			return responseEntity;
 		}
-		user.setStatus("Y");
-
 		userService.save(user);
-
 		return new ResponseEntity<>(
 				jsonObject.put(APIConstant.USER_CREATE_STATUS, APIConstant.USER_SUCCESSFULLY_CREATED).toString(),
 				HttpStatus.OK);
@@ -59,10 +56,9 @@ public class UserController {
 		if (responseEntity != null) {
 			return responseEntity;
 		}
-
 		userService.save(user);
 		return new ResponseEntity<>(
-				jsonObject.put(APIConstant.UPDATE_STATUS, APIConstant.USER_SUCCESSFULLY_UPDATED).toString(),
+				jsonObject.put(APIConstant.USER_UPDATE_STATUS, APIConstant.USER_SUCCESSFULLY_UPDATED).toString(),
 				HttpStatus.OK);
 	}
 
@@ -121,7 +117,7 @@ public class UserController {
 
 // (6). GET ALL ACTIVE LINE MANAGER
 
-	@ApiOperation(value = APIConstant.GET_ALL_ACIVE_USER)
+	@ApiOperation(value = APIConstant.GET_ALL_ACIVE_MANAGER)
 	@RequestMapping(value = APIConstant.ALL_ACTIVE_MANAGER, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getAllActiveManager() {
 		return new ResponseEntity<>(userService.getAllActiveManager(), HttpStatus.OK);

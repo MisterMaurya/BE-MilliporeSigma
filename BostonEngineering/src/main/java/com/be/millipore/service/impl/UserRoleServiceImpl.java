@@ -17,10 +17,10 @@ public class UserRoleServiceImpl implements UserRoleService {
 	private UserRoleRepo userRoleRepo;
 
 	@Override
-	public List<UserRole> findALLUserRole() {
-		List<UserRole> listOfUser = new ArrayList<>();
-		userRoleRepo.findAll().forEach(e -> listOfUser.add(e));
-		return listOfUser;
+	public List<UserRole> findAllUserRole() {
+		List<UserRole> listOfUserRole = new ArrayList<>();
+		userRoleRepo.findAll().forEach(e -> listOfUserRole.add(e));
+		return listOfUserRole;
 	}
 
 }

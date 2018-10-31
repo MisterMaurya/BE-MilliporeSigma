@@ -7,6 +7,7 @@ import com.be.millipore.beans.User;
 
 @Repository
 public interface UserRepo extends CrudRepository<User, Long> {
+
 	public User findByEmail(String email);
 
 	public User findByMobile(String mobile);

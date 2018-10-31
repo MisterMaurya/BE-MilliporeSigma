@@ -163,7 +163,9 @@ public class UserServiceImpl implements UserService {
 						HttpStatus.OK);
 			}
 		}
-
+		if (!user.getStatus().equals("N")) {
+			user.setStatus("Y");
+		}
 		return null;
 	}
 
@@ -183,6 +185,7 @@ public class UserServiceImpl implements UserService {
 		return activeManager;
 	}
 
+	@Override
 	public JSONObject getOneUser(Long id) throws JSONException {
 		boolean isExists = false;
 		JSONObject jsonObject = new JSONObject();

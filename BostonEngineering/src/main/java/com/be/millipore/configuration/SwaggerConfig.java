@@ -19,11 +19,11 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
 	private static final String SWAGGER_API_VERSION = "1.0";
 	private static final String LICENSE_TEXT = "License";
-	private static final String title = "Boston Engineering RESTFul API";
-	private static final String description = "RESTful APIs for Boston Engineering";
+	private static final String TITLE = "Boston Engineering RESTFul API";
+	private static final String DESCRIPTION = "RESTful APIs for Boston Engineering";
 
 	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title(title).description(description).license(LICENSE_TEXT)
+		return new ApiInfoBuilder().title(TITLE).description(DESCRIPTION).license(LICENSE_TEXT)
 				.version(SWAGGER_API_VERSION).build();
 	}
 
