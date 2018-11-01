@@ -25,6 +25,7 @@ public class User {
 	private String countryCode;
 	private String mobile;
 	private Long lineManageId;
+	private String password;
 	private String status;
 
 	private Set<UserRole> role = new HashSet<UserRole>(0);
@@ -118,6 +119,14 @@ public class User {
 
 	public void setRole(Set<UserRole> role) {
 		this.role = role;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getStatus() {

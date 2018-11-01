@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.be.millipore.apiconstant.APIConstant;
@@ -27,8 +28,11 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRoleRepo userRoleRepo;
 
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+
 	@Override
 	public User save(User user) {
+		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		return userRepo.save(user);
 	}
 
@@ -210,9 +214,13 @@ public class UserServiceImpl implements UserService {
 		jsonObject.put("mobile", user.getMobile());
 		jsonObject.put("lineManageId", user.getLineManageId());
 		jsonObject.put("status", user.getStatus());
+
 		for (UserRole userRole : user.getRole()) {
+			jsonObject2.put("userRoleId", userRole.getUserRoleId());
 			jsonObject2.put("userRole", userRole.getUserRole());
+
 		}
+
 		jsonArray.put(jsonObject2);
 		jsonObject.put("role", jsonArray);
 

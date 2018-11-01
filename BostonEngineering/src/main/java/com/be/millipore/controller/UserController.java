@@ -75,6 +75,7 @@ public class UserController {
 			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.USER_NOT_EXISTS);
 			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
 		}
+
 		jsonObject = userService.getOneUser(id);
 		for (UserRole userRole : existingUser.getRole()) {
 			if (userRole.getUserRole().equals("Operator")) {
