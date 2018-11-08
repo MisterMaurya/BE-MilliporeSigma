@@ -22,7 +22,7 @@ public interface UserService {
 
 	public User findByMobile(String mobile);
 
-	public User findByUserId(String userId);
+	public User findByUserName(String userName);
 
 	public User getLineManager(Long lineManagerId); // Return All Manager
 

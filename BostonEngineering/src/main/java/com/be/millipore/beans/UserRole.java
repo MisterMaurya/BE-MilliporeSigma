@@ -5,7 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity(name = "user_role")
+@Entity(name = "user_role_master")
 public class UserRole {
 
 	private Long userRoleId;

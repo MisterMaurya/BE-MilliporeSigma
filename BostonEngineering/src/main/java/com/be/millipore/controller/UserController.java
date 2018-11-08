@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping(value = APIConstant.REST_BASE_URL + APIConstant.REST_USER_URL)
 @Api(tags = { APIConstant.USER_CONTROLLER_TAG })
 public class UserController {
@@ -31,6 +34,7 @@ public class UserController {
 // (1). ****** CREATE A NEW USER ****//
 
 	@ApiOperation(value = APIConstant.USER_CREATE)
+	// @PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> createUser(@RequestBody User user) throws JSONException {
 		JSONObject jsonObject = new JSONObject();
@@ -48,6 +52,7 @@ public class UserController {
 // (2). ****** UPDATE A USER ****//	
 
 	@ApiOperation(value = APIConstant.USER_UPDATE)
+	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = APIConstant.REST_ID_PARAM, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) throws JSONException {
 
@@ -64,7 +69,9 @@ public class UserController {
 
 // (3). ****** GET ONE USER ****//
 
+	//// @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	@ApiOperation(value = APIConstant.GET_ONE_USER)
+	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = APIConstant.REST_ID_PARAM, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getUser(@PathVariable Long id) throws JSONException {
 		User existingUser = null;
@@ -93,6 +100,7 @@ public class UserController {
 // (4). ****** GET LIST OF ALL USER  ****//
 
 	@ApiOperation(value = APIConstant.GET_ALL_USER)
+	// @PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getAllUser() {
 		return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
@@ -101,6 +109,7 @@ public class UserController {
 // (5). ****** CHANGE USER STATUS ****//
 
 	@ApiOperation(value = APIConstant.CHANGE_STATUS)
+	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = APIConstant.REST_ID_STATUS
 			+ APIConstant.REST_ID_PARAM, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> changeUserStatus(@PathVariable Long id) throws JSONException {
@@ -119,6 +128,7 @@ public class UserController {
 // (6). GET ALL ACTIVE LINE MANAGER
 
 	@ApiOperation(value = APIConstant.GET_ALL_ACIVE_MANAGER)
+	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = APIConstant.ALL_ACTIVE_MANAGER, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getAllActiveManager() {
 		return new ResponseEntity<>(userService.getAllActiveManager(), HttpStatus.OK);

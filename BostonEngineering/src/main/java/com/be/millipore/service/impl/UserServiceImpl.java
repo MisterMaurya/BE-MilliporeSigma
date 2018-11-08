@@ -1,7 +1,9 @@
 package com.be.millipore.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,6 +11,10 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +25,8 @@ import com.be.millipore.repository.UserRepo;
 import com.be.millipore.repository.UserRoleRepo;
 import com.be.millipore.service.UserService;
 
-@Service
-public class UserServiceImpl implements UserService {
+@Service(value = "userService")
+public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Autowired
 	private UserRepo userRepo;
@@ -28,11 +34,12 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRoleRepo userRoleRepo;
 
-	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	@Autowired
+	private BCryptPasswordEncoder bcryptEncoder;
 
 	@Override
 	public User save(User user) {
-		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		user.setPassword(bcryptEncoder.encode(user.getPassword()));
 		return userRepo.save(user);
 	}
 
@@ -51,9 +58,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User findByUserId(String userId) {
+	public User findByUserName(String userName) {
 		User user = null;
-		user = userRepo.findByUserId(userId);
+		user = userRepo.findByUserName(userName);
 		return user;
 	}
 
@@ -129,7 +136,7 @@ public class UserServiceImpl implements UserService {
 
 		//
 
-		if (existingUser.getEmail() != null && existingUser.getId() != user.getId()) {
+		if (existingUser != null && existingUser.getId() != user.getId()) {
 			return new ResponseEntity<String>(
 					jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.EMAIL_ALREADY_EXISTS).toString(),
 					HttpStatus.BAD_REQUEST);
@@ -145,7 +152,7 @@ public class UserServiceImpl implements UserService {
 					HttpStatus.BAD_REQUEST);
 		}
 
-		existingUser = findByUserId(user.getUserId());
+		existingUser = findByUserName(user.getUserName());
 
 		if (existingUser != null && existingUser.getId() != user.getId()) {
 			return new ResponseEntity<>(
@@ -205,7 +212,7 @@ public class UserServiceImpl implements UserService {
 		}
 		User user = userRepo.findById(id).get();
 		jsonObject.put("id", user.getId());
-		jsonObject.put("userId", user.getUserId());
+		jsonObject.put("userId", user.getUserName());
 		jsonObject.put("email", user.getEmail());
 		jsonObject.put("fullName", user.getFullName());
 		jsonObject.put("title", user.getTitle());
@@ -225,6 +232,27 @@ public class UserServiceImpl implements UserService {
 		jsonObject.put("role", jsonArray);
 
 		return jsonObject;
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+		User user = userRepo.findByUserName(userName);
+		if (user == null) {
+			throw new UsernameNotFoundException("Invalid username or password.");
+		}
+		return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(),
+				getAuthority(user));
+
+	}
+
+	private Set<SimpleGrantedAuthority> getAuthority(User user) {
+		Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+		user.getRole().forEach(role -> {
+			// authorities.add(new SimpleGrantedAuthority(role.getName()));
+			authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getUserRole()));
+		});
+		return authorities;
+		// return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
 	}
 
 }

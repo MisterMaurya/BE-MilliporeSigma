@@ -12,7 +12,7 @@ public interface UserRepo extends CrudRepository<User, Long> {
 
 	public User findByMobile(String mobile);
 
-	public User findByUserId(String userId);
+	public User findByUserName(String userName);
 
 	public User findBylineManageId(Long lineManagerId);
 

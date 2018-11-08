@@ -3,9 +3,9 @@ package com.be.millipore.beans;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,11 +13,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-@Entity(name = "user")
+@Entity(name = "user_master")
 public class User {
 
 	private Long id;
-	private String userId;
+	private String userName;
 	private String email;
 	private String fullName;
 	private String title;
@@ -44,12 +44,12 @@ public class User {
 		this.id = id;
 	}
 
-	public String getUserId() {
-		return userId;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	@Column(unique = true)
@@ -110,8 +110,8 @@ public class User {
 		this.lineManageId = lineManageId;
 	}
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "user_role_map", joinColumns = { @JoinColumn(name = "id") }, inverseJoinColumns = {
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "user_role_map", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = {
 			@JoinColumn(name = "userRoleId") })
 	public Set<UserRole> getRole() {
 		return role;

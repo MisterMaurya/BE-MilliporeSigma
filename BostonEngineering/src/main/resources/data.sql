@@ -16,23 +16,13 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Dumping data for table `user`
+-- Dumping data for table `user_master`
 --
 
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'+91','IT','admin@boston.com','BOSTON_ADMIN',0,'976887273','Y','JAX','admin#Boston'),(2,'+91','IT','manager@boston.com','BOSTON_MANAGER',0,'976887271','Y','JAX','manager#Boston'),(3,'+91','IT','operator@boston.com','BOSTON_OPERATOR',2,'976887279','Y','JAX','operator#Boston');
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping data for table `user_role`
---
-
-LOCK TABLES `user_role` WRITE;
-/*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
-INSERT INTO `user_role` VALUES (1,'Admin'),(2,'Manager'),(3,'Operator');
-/*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
+LOCK TABLES `user_master` WRITE;
+/*!40000 ALTER TABLE `user_master` DISABLE KEYS */;
+INSERT INTO `user_master` VALUES (1,'+91','IT','admin@gmail.com','Lattice Admin',0,'987654345','$2a$10$h/m/LTR8upfKnSAWIq40H.CifBTkksNcFcWsOlkgPC.SBjaE.aOWK','Y','Test','admin11'),(2,'+91','IT','manager@gmail.com','Lattice Manager',0,'987654355','$2a$10$g7oHu6SO8oKqw/1hgVlJmuy42WZroTQLysc5csacczxslQtkZZ.S6','Y','Test','manager11'),(3,'+91','IT','operator@gmail.com','Lattice Operator',2,'987114355','$2a$10$zxjseGnLEkL5B3iqpQ7JKOy4Fj7H7x8QFSZ2uRfOMiE1tRefee6jC','Y','Test','operator11');
+/*!40000 ALTER TABLE `user_master` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -44,6 +34,16 @@ LOCK TABLES `user_role_map` WRITE;
 INSERT INTO `user_role_map` VALUES (1,1),(2,2),(3,3);
 /*!40000 ALTER TABLE `user_role_map` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping data for table `user_role_master`
+--
+
+LOCK TABLES `user_role_master` WRITE;
+/*!40000 ALTER TABLE `user_role_master` DISABLE KEYS */;
+INSERT INTO `user_role_master` VALUES (1,'ADMIN'),(2,'MANAGER'),(3,'OPERATOR');
+/*!40000 ALTER TABLE `user_role_master` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-30 16:57:25
+-- Dump completed on 2018-11-05 12:57:10

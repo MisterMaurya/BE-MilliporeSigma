@@ -16,13 +16,13 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `user`
+-- Table structure for table `user_master`
 --
 
-DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `user_master`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user` (
+CREATE TABLE `user_master` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `country_code` varchar(255) DEFAULT NULL,
   `department` varchar(255) DEFAULT NULL,
@@ -30,27 +30,14 @@ CREATE TABLE `user` (
   `full_name` varchar(255) DEFAULT NULL,
   `line_manage_id` bigint(20) DEFAULT NULL,
   `mobile` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
-  `user_id` varchar(255) DEFAULT NULL,
+  `user_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `UK_ob8kqyqqgmefl0aco34akdtpe` (`email`),
-  UNIQUE KEY `UK_cnjwxx5favk5ycqajjt17fwy1` (`mobile`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `user_role`
---
-
-DROP TABLE IF EXISTS `user_role`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user_role` (
-  `user_role_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_role` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`user_role_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+  UNIQUE KEY `UK_9byi2yd5e68hr1x8ou18fj55c` (`email`),
+  UNIQUE KEY `UK_n4n5h37vsp6yjjjq5fl224p43` (`mobile`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -61,11 +48,25 @@ DROP TABLE IF EXISTS `user_role_map`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_role_map` (
-  `id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
   `user_role_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`,`user_role_id`),
-  KEY `FKg671q2fnsskr6yies17r9a5ox` (`user_role_id`)
+  PRIMARY KEY (`user_id`,`user_role_id`),
+  KEY `FKst9f3s9paaie0dt1xehjfkdur` (`user_role_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `user_role_master`
+--
+
+DROP TABLE IF EXISTS `user_role_master`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_role_master` (
+  `user_role_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_role` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`user_role_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -77,4 +78,4 @@ CREATE TABLE `user_role_map` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-30 16:56:43
+-- Dump completed on 2018-11-05 12:56:33
