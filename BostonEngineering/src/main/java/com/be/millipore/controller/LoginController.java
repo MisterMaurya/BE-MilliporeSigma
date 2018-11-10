@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/login")
 @Api(tags = { APIConstant.USER_LOGIN_TAG })
-public class AuthenticationController {
+public class LoginController {
 
 	@Autowired
 	private AuthenticationManager authenticationManager;

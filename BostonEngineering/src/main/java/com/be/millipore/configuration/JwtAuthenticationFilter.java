@@ -1,6 +1,6 @@
 package com.be.millipore.configuration;
 
-import static com.be.millipore.constant.Constants.TOKEN_PREFIX;
+import static com.be.millipore.constant.SecurityConstant.TOKEN_PREFIX;
 
 import java.io.IOException;
 

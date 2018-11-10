@@ -1,8 +1,8 @@
 package com.be.millipore.configuration;
 
-import static com.be.millipore.constant.Constants.ACCESS_TOKEN_VALIDITY_SECONDS;
-import static com.be.millipore.constant.Constants.AUTHORITIES_KEY;
-import static com.be.millipore.constant.Constants.SIGNING_KEY;
+import static com.be.millipore.constant.SecurityConstant.ACCESS_TOKEN_VALIDITY_SECONDS;
+import static com.be.millipore.constant.SecurityConstant.AUTHORITIES_KEY;
+import static com.be.millipore.constant.SecurityConstant.SIGNING_KEY;
 
 import java.io.Serializable;
 import java.util.Arrays;
