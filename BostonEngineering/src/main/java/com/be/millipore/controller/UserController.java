@@ -14,13 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.be.millipore.apiconstant.APIConstant;
 import com.be.millipore.beans.User;
 import com.be.millipore.beans.UserRole;
+import com.be.millipore.constant.APIConstant;
 import com.be.millipore.service.UserService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -33,8 +35,11 @@ public class UserController {
 
 // (1). ****** CREATE A NEW USER ****//
 
-	@ApiOperation(value = APIConstant.USER_CREATE)
-	// @PreAuthorize("hasRole('ADMIN')")
+	@ApiOperation(value = APIConstant.USER_CREATE, notes = APIConstant.USER_CREATE_NOTE)
+	@PreAuthorize("hasRole('ADMIN')")
+	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
+			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
+			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
 	@RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> createUser(@RequestBody User user) throws JSONException {
 		JSONObject jsonObject = new JSONObject();
@@ -53,6 +58,9 @@ public class UserController {
 
 	@ApiOperation(value = APIConstant.USER_UPDATE)
 	@PreAuthorize("hasRole('ADMIN')")
+	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
+			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
+			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
 	@RequestMapping(value = APIConstant.REST_ID_PARAM, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) throws JSONException {
 
@@ -69,8 +77,12 @@ public class UserController {
 
 // (3). ****** GET ONE USER ****//
 
-	//// @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	// @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+
 	@ApiOperation(value = APIConstant.GET_ONE_USER)
+	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
+			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
+			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
 	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = APIConstant.REST_ID_PARAM, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getUser(@PathVariable Long id) throws JSONException {
@@ -100,7 +112,9 @@ public class UserController {
 // (4). ****** GET LIST OF ALL USER  ****//
 
 	@ApiOperation(value = APIConstant.GET_ALL_USER)
-	// @PreAuthorize("hasRole('ADMIN')")
+	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
+			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN), })
+	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getAllUser() {
 		return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
@@ -109,6 +123,9 @@ public class UserController {
 // (5). ****** CHANGE USER STATUS ****//
 
 	@ApiOperation(value = APIConstant.CHANGE_STATUS)
+	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
+			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
+			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
 	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = APIConstant.REST_ID_STATUS
 			+ APIConstant.REST_ID_PARAM, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -129,6 +146,9 @@ public class UserController {
 
 	@ApiOperation(value = APIConstant.GET_ALL_ACIVE_MANAGER)
 	@PreAuthorize("hasRole('ADMIN')")
+	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
+			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
+			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
 	@RequestMapping(value = APIConstant.ALL_ACTIVE_MANAGER, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getAllActiveManager() {
 		return new ResponseEntity<>(userService.getAllActiveManager(), HttpStatus.OK);

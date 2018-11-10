@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.be.millipore.apiconstant.APIConstant;
 import com.be.millipore.beans.UserRole;
+import com.be.millipore.constant.APIConstant;
 import com.be.millipore.service.UserRoleService;
 
 import io.swagger.annotations.Api;

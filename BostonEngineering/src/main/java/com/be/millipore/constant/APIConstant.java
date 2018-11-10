@@ -1,4 +1,4 @@
-package com.be.millipore.apiconstant;
+package com.be.millipore.constant;
 
 public class APIConstant {
 
@@ -54,6 +54,16 @@ public class APIConstant {
 	public static final String USER_ROLE_CONTROLLER_DESCRIPTON = "OPERATIONS PERTAINING TO BOSTON USER ROLE";
 	public static final String LOGIN = "User Login";
 	public static final String USER_LOGIN_DESCRIPTICON = "User Login";
+
+//*** SWAGGER  OPERATION NOTE   ***	
+
+	public static final String USER_CREATE_NOTE = "The User is created by the Admin";
+
+//*** SWAGGER  APIRESPONSES MESSAGE   ***
+
+	public static final String FORBIDDEN = "Accessing the resource you were trying to reach is forbidden";
+	public static final String NOT_FOUND = "The resource you were trying to reach is not found";
+	public static final String NOT_AUTHORIZED = "You are not authorized to view the resource";
 
 	// JWT == Header.payload.signature
 

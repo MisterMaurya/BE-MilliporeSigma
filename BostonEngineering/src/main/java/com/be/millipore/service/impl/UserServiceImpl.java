@@ -18,9 +18,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.be.millipore.apiconstant.APIConstant;
 import com.be.millipore.beans.User;
 import com.be.millipore.beans.UserRole;
+import com.be.millipore.constant.APIConstant;
 import com.be.millipore.repository.UserRepo;
 import com.be.millipore.repository.UserRoleRepo;
 import com.be.millipore.service.UserService;

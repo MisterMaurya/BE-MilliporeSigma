@@ -5,12 +5,13 @@ import java.util.Arrays;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.be.millipore.apiconstant.APIConstant;
+import com.be.millipore.constant.APIConstant;
 
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ApiKey;
+import springfox.documentation.service.Contact;
 import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -25,9 +26,11 @@ public class SwaggerConfig {
 	private static final String LICENSE_TEXT = "License";
 	private static final String TITLE = "Boston Engineering RESTFul API";
 	private static final String DESCRIPTION = "RESTful APIs for Boston Engineering";
+	public static final Contact DEFAULT_CONTACT = new Contact("Pawan Maurya", "http://github.com/mistermaurya",
+			"pawank@thelattice.in");
 
 	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title(TITLE).description(DESCRIPTION).license(LICENSE_TEXT)
+		return new ApiInfoBuilder().title(TITLE).description(DESCRIPTION).license(LICENSE_TEXT).contact(DEFAULT_CONTACT)
 				.version(SWAGGER_API_VERSION).build();
 	}
 
