@@ -1,4 +1,4 @@
-package com.be.millipore.beans;
+package com.be.millipore.security;
 
 public class AuthToken {
 

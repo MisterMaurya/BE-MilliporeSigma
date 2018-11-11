@@ -1,4 +1,4 @@
-package com.be.millipore.configuration;
+package com.be.millipore.security;
 
 import static com.be.millipore.constant.SecurityConstant.TOKEN_PREFIX;
 

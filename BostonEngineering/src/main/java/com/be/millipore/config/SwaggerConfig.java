@@ -1,4 +1,4 @@
-package com.be.millipore.configuration;
+package com.be.millipore.config;
 
 import java.util.Arrays;
 
@@ -37,9 +37,9 @@ public class SwaggerConfig {
 	@Bean
 	public Docket bostonApi() {
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
-				.tags(new Tag(APIConstant.USER_CONTROLLER_TAG, APIConstant.USER_CONTROLLER_DESCRIPTON),
-						new Tag(APIConstant.USER_ROLE_CONTROLLER_TAG, APIConstant.USER_ROLE_CONTROLLER_DESCRIPTON),
-						new Tag(APIConstant.USER_LOGIN_TAG, APIConstant.USER_ROLE_CONTROLLER_DESCRIPTON))
+				.tags(new Tag(APIConstant.USER_CONTROLLER_TAG, APIConstant.USER_CONTROLLER_DESCRIPTION),
+						new Tag(APIConstant.USER_ROLE_CONTROLLER_TAG, APIConstant.USER_ROLE_CONTROLLER_DESCRIPTION),
+						new Tag(APIConstant.USER_LOGIN_TAG, APIConstant.USER_LOGIN_DESCRIPTION))
 				.select().apis(RequestHandlerSelectors.basePackage("com.be.millipore")).build()
 				.securitySchemes(Arrays.asList(apiKey()));
 	}

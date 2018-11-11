@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.be.millipore.beans.AuthToken;
 import com.be.millipore.beans.LoginUser;
-import com.be.millipore.configuration.TokenProvider;
 import com.be.millipore.constant.APIConstant;
+import com.be.millipore.security.AuthToken;
+import com.be.millipore.security.TokenProvider;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,7 +34,7 @@ public class LoginController {
 	private TokenProvider jwtTokenUtil;
 
 	@RequestMapping(method = RequestMethod.POST)
-	@ApiOperation(value = APIConstant.USER_LOGIN_DESCRIPTICON)
+	@ApiOperation(value = APIConstant.USER_LOGIN)
 	public ResponseEntity<?> login(@RequestBody LoginUser loginUser) throws AuthenticationException {
 
 		final Authentication authentication = authenticationManager.authenticate(

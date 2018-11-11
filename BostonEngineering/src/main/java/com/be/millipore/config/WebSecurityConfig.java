@@ -1,4 +1,4 @@
-package com.be.millipore.configuration;
+package com.be.millipore.config;
 
 import javax.annotation.Resource;
 
@@ -16,6 +16,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.be.millipore.security.JwtAuthenticationEntryPoint;
+import com.be.millipore.security.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
