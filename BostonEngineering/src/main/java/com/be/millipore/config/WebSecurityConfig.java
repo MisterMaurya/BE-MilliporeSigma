@@ -60,9 +60,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 				.antMatchers("/", "/favicon.ico", "/**/*.png", "/**/*.gif", "/**/*.svg", "/**/*.jpg", "/**/*.html",
 						"/**/*.css", "/**/*.js")
+
 				.permitAll()
 
-				.antMatchers("/login").permitAll().antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+				.antMatchers("/login/**", "/boston/", "/bootstrap/**", "/jquery/**", "/css/**", " /js/**", "/images/**")
+				.permitAll().antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
 				.anyRequest().authenticated().and()
 				.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);

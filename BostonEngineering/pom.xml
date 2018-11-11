@@ -35,6 +35,11 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -97,8 +102,9 @@
 		<dependency>
 			<groupId>org.webjars.bower</groupId>
 			<artifactId>jquery</artifactId>
-			<version>3.2.1</version>
+			<version>1.9.1</version>
 		</dependency>
+		
 
 
 	</dependencies>
