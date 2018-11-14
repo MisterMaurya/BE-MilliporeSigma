@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		user.setLastPassword("PENDING");
 
 		Response response = emailService.sendHTML(APIConstant.ORGANISATION_EMAIL, user.getEmail(), APIConstant.SUBJECT,
-				"<strong>Hi Mr " + user.getFullName()
+				"<strong>Hey " + user.getFullName()
 						+ ",</strong> <br><br> <i>you already have access to your boston Account and Please reset the password using OTP(One Time Password)</i> : <strong>"
 						+ otp + "</strong>");
 		System.out.println(response.getStatusCode());
@@ -327,8 +327,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		User existingUser = null;
 		JSONObject jsonObject = new JSONObject();
 		existingUser = userRepo.findByEmail(userDto.getEmail());
-		// if user already verified
 
+		// if user already verified
 		if (existingUser.getStatus().equals("Y")) {
 			jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.USERID_ALREADY_VERIFIED);
 			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
@@ -340,6 +340,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		}
 		existingUser.setPassword(bcryptEncoder.encode(userDto.getPassword())); // update password
 		existingUser.setStatus("Y"); // update status
+		existingUser.setOtp("");
 		userRepo.save(existingUser);
 		jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.VERIFY_SUCCESSFULLY);
 		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
@@ -349,18 +350,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 // ******* isPasswordAlreadyUse(arg1 , arg2) will check password already used or not
 
 	private ResponseEntity<?> isPasswordAlreadyUse(String password, User user) throws JSONException {
-		JSONObject jsonObject = new JSONObject();
-		System.out.println(user.getPassword());
-		System.out.println(bcryptEncoder.encode(password));
-		System.out.println(user.getLastPassword());
 
-		if (user.getPassword().equals(bcryptEncoder.encode(password))) {
+		JSONObject jsonObject = new JSONObject();
+
+		if (bcryptEncoder.matches(password, user.getPassword())) {
 			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE,
 					"you entered your current password please a different password");
 			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
 
 		}
-		if (user.getLastPassword().equals(bcryptEncoder.encode(password))) {
+		if (bcryptEncoder.matches(password, user.getLastPassword())) {
 			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE,
 					"you can not use your last password! Please you a different password");
 			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
@@ -384,14 +383,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			return responseEntity;
 		}
 
-		if (existingUser.getLastPassword().equals("PENDING")) {
-			existingUser.setLastPassword(bcryptEncoder.encode(userDto.getPassword()));
-			userRepo.save(existingUser);
-			jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.PASSWORD_SUCESSFULLY_RESET);
-			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
-		}
 		existingUser.setLastPassword(existingUser.getPassword());
 		existingUser.setPassword(bcryptEncoder.encode(userDto.getPassword()));
+		existingUser.setOtp("");
 		userRepo.save(existingUser);
 		jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.PASSWORD_SUCESSFULLY_RESET);
 		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
@@ -415,17 +409,34 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			return responseEntity;
 		}
 
-		if (existingUser.getLastPassword().equals("PENDING")) {
-			existingUser.setLastPassword(bcryptEncoder.encode(password));
-			userRepo.save(existingUser);
-			jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.PASSWORD_SUCESSFULLY_RESET);
-			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
-		}
 		existingUser.setLastPassword(existingUser.getPassword());
 		existingUser.setPassword(bcryptEncoder.encode(password));
 		userRepo.save(existingUser);
 
 		jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.PASSWORD_SUCESSFULLY_UPDATED);
+		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<?> sendOtpForForgotPassword(String email) throws JSONException {
+		User existingUser = null;
+		JSONObject jsonObject = new JSONObject();
+		existingUser = userRepo.findByEmail(email);
+		if (existingUser == null) {
+			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.USER_NOT_EXISTS);
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
+		}
+		String otp = generateOTP();
+		existingUser.setOtp(otp);
+		Response response = emailService.sendHTML(APIConstant.ORGANISATION_EMAIL, existingUser.getEmail(),
+				APIConstant.SUBJECT,
+				"<strong>Hello " + existingUser.getFullName()
+						+ ",</strong> <br><br> <i>A request has been received to forgot the password for your <b>Boston Account.</b>Your OTP(One Time Password) is</i> : <strong>"
+						+ otp + "</strong>");
+
+		userRepo.save(existingUser);
+		System.out.println(response.getStatusCode());
+		jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.OTP_SEND);
 		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
 	}
 

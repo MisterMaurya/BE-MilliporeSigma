@@ -46,6 +46,7 @@ public class EmailServiceImpl implements EmailService {
 		Request request = new Request();
 		Response response = null;
 		try {
+
 			request.setMethod(Method.POST);
 			request.setEndpoint("mail/send");
 			request.setBody(mail.build());
@@ -53,6 +54,7 @@ public class EmailServiceImpl implements EmailService {
 		} catch (IOException ex) {
 			System.out.println(ex.getMessage());
 		}
+
 		return response;
 	}
 }

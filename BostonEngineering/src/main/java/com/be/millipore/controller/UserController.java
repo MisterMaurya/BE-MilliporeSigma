@@ -166,6 +166,17 @@ public class UserController {
 		return new ResponseEntity<>(userService.verfityUser(userDto), HttpStatus.OK);
 	}
 
+// (9). SEND OTP FOR FORGOT PASSWORD  
+
+	@ApiOperation(value = APIConstant.SEND_OTP_FOR_FORGOT_PASSWORD)
+	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
+			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
+			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
+	@RequestMapping(value = APIConstant.SEND_FORGOT_PASSWORD_OTP, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> sendOtpForForgotPassword(String email) throws JSONException {
+		return userService.sendOtpForForgotPassword(email);
+	}
+
 // (8). FORGOT PASSWORD 
 
 	@ApiOperation(value = APIConstant.FORGOT_PASSWORD)
@@ -177,19 +188,12 @@ public class UserController {
 		return userService.forgotPassword(userDto);
 	}
 
-// (9). UPDATE PASSWORD 	
+// (10). UPDATE PASSWORD 	
 
-	/*
-	 * @ApiOperation(value = APIConstant.UPDATE_PASSWORD_OPERATION)
-	 * 
-	 * @ApiResponses(value = { @ApiResponse(code = 401, message =
-	 * APIConstant.NOT_AUTHORIZED),
-	 * 
-	 * @ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
-	 * 
-	 * @ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
-	 */
-
+	@ApiOperation(value = APIConstant.UPDATE_PASSWORD_OPERATION)
+	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
+			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
+			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
 	@RequestMapping(value = APIConstant.UPDATE_PASSWORD, method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> updatePassword(@PathVariable("id") Long id, @RequestParam("password") String password)
 			throws JSONException {

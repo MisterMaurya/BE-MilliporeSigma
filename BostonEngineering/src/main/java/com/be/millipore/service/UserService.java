@@ -41,4 +41,7 @@ public interface UserService {
 
 	public ResponseEntity<?> updatePassword(Long id, String password) throws JSONException; // update password
 
+	public ResponseEntity<?> sendOtpForForgotPassword(String email) throws JSONException; // send OTP for forgot
+																							// password
+
 }

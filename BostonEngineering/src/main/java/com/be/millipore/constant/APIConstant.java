@@ -92,5 +92,8 @@ public class APIConstant {
 	public static final String PASSWORD_SUCESSFULLY_RESET = "Password successfully reset";
 	public static final String PASSWORD_SUCESSFULLY_UPDATED = "Password successfully updated";
 	public static final String UPDATE_PASSWORD_OPERATION = "Update password";
+	public static final String SEND_OTP_FOR_FORGOT_PASSWORD = "send otp for forgot password";
+	public static final String OTP_SEND = "OTP (One Time Password) send successfully";
+	public static final String SEND_FORGOT_PASSWORD_OTP = "/send_otp";
 
 }
