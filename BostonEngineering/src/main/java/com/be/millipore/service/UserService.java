@@ -39,4 +39,6 @@ public interface UserService {
 
 	public ResponseEntity<?> forgotPassword(UserDto userDto) throws JSONException; // forgot password
 
+	public ResponseEntity<?> updatePassword(Long id, String password) throws JSONException; // update password
+
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.be.millipore.beans.User;
@@ -173,7 +174,26 @@ public class UserController {
 			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
 	@RequestMapping(value = APIConstant.FORGOT, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> forgotPassword(@RequestBody UserDto userDto) throws JSONException {
-		return new ResponseEntity<>(userService.verfityUser(userDto), HttpStatus.OK);
+		return userService.forgotPassword(userDto);
+	}
+
+// (9). UPDATE PASSWORD 	
+
+	/*
+	 * @ApiOperation(value = APIConstant.UPDATE_PASSWORD_OPERATION)
+	 * 
+	 * @ApiResponses(value = { @ApiResponse(code = 401, message =
+	 * APIConstant.NOT_AUTHORIZED),
+	 * 
+	 * @ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
+	 * 
+	 * @ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
+	 */
+
+	@RequestMapping(value = APIConstant.UPDATE_PASSWORD, method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	public ResponseEntity<?> updatePassword(@PathVariable("id") Long id, @RequestParam("password") String password)
+			throws JSONException {
+		return userService.updatePassword(id, password);
 	}
 
 }

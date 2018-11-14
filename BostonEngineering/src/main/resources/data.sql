@@ -21,7 +21,7 @@
 
 LOCK TABLES `user_master` WRITE;
 /*!40000 ALTER TABLE `user_master` DISABLE KEYS */;
-INSERT INTO `user_master` VALUES (1,'+91','IT','admin@gmail.com','Lattice Admin',0,'987654345','$2a$10$h/m/LTR8upfKnSAWIq40H.CifBTkksNcFcWsOlkgPC.SBjaE.aOWK','Y','Test','admin11'),(2,'+91','IT','manager@gmail.com','Lattice Manager',0,'987654355','$2a$10$g7oHu6SO8oKqw/1hgVlJmuy42WZroTQLysc5csacczxslQtkZZ.S6','Y','Test','manager11'),(3,'+91','IT','operator@gmail.com','Lattice Operator',2,'987114355','$2a$10$zxjseGnLEkL5B3iqpQ7JKOy4Fj7H7x8QFSZ2uRfOMiE1tRefee6jC','Y','Test','operator11');
+INSERT INTO `user_master` VALUES (1,'+91','IT','admin@gmail.com','Lattice Admin',0,'987654345','$2a$10$h/m/LTR8upfKnSAWIq40H.CifBTkksNcFcWsOlkgPC.SBjaE.aOWK','Y','Test','admin11','PENDING',NULL),(2,'+91','IT','manager@gmail.com','Lattice Manager',0,'987654355','$2a$10$g7oHu6SO8oKqw/1hgVlJmuy42WZroTQLysc5csacczxslQtkZZ.S6','Y','Test','manager11','PENDING',NULL),(3,'+91','IT','operator@gmail.com','Lattice Operator',2,'987114355','$2a$10$zxjseGnLEkL5B3iqpQ7JKOy4Fj7H7x8QFSZ2uRfOMiE1tRefee6jC','Y','Test','operator11','PENDING',NULL);
 /*!40000 ALTER TABLE `user_master` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-11-05 12:57:10
+-- Dump completed on 2018-11-14 14:01:45

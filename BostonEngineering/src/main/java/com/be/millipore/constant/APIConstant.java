@@ -35,6 +35,7 @@ public class APIConstant {
 	public static final String VERIFY = "/verify";
 	public static final String USER_STATUS = "status";
 	public static final String FORGOT = "/forgot";
+	public static final String UPDATE_PASSWORD = "/updatepasssword/{id}";
 
 //*** USER API OPERATIONS ***//	
 
@@ -87,5 +88,9 @@ public class APIConstant {
 	public static final String OTP_NOT_VALID = "Please Enter valid One Time Password(OTP)";
 	public static final String VERIFY_SUCCESSFULLY = "User Successfully verified";
 	public static final String USERID_ALREADY_VERIFIED = "User already verified";
+	public static final String PASSWORD_ALREADY_IN_USE = "this is your l";
+	public static final String PASSWORD_SUCESSFULLY_RESET = "Password successfully reset";
+	public static final String PASSWORD_SUCESSFULLY_UPDATED = "Password successfully updated";
+	public static final String UPDATE_PASSWORD_OPERATION = "Update password";
 
 }

@@ -50,13 +50,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		String otp = generateOTP();
 		user.setOtp(otp);
 		user.setPassword(bcryptEncoder.encode(user.getPassword()));
-		isSave = userRepo.save(user);
+		user.setLastPassword("PENDING");
 
 		Response response = emailService.sendHTML(APIConstant.ORGANISATION_EMAIL, user.getEmail(), APIConstant.SUBJECT,
 				"<strong>Hi Mr " + user.getFullName()
 						+ ",</strong> <br><br> <i>you already have access to your boston Account and Please reset the password using OTP(One Time Password)</i> : <strong>"
 						+ otp + "</strong>");
 		System.out.println(response.getStatusCode());
+		isSave = userRepo.save(user);
 		return isSave;
 	}
 
@@ -345,17 +346,87 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	}
 
+// ******* isPasswordAlreadyUse(arg1 , arg2) will check password already used or not
+
+	private ResponseEntity<?> isPasswordAlreadyUse(String password, User user) throws JSONException {
+		JSONObject jsonObject = new JSONObject();
+		System.out.println(user.getPassword());
+		System.out.println(bcryptEncoder.encode(password));
+		System.out.println(user.getLastPassword());
+
+		if (user.getPassword().equals(bcryptEncoder.encode(password))) {
+			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE,
+					"you entered your current password please a different password");
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
+
+		}
+		if (user.getLastPassword().equals(bcryptEncoder.encode(password))) {
+			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE,
+					"you can not use your last password! Please you a different password");
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+
+	}
+
 	@Override
 	public ResponseEntity<?> forgotPassword(UserDto userDto) throws JSONException {
 		User existingUser = null;
+		ResponseEntity<?> responseEntity = null;
 		JSONObject jsonObject = new JSONObject();
 		existingUser = userRepo.findByEmail(userDto.getEmail());
-		ResponseEntity<?> responseEntity = matchOTPAndPassword(userDto);
+		responseEntity = matchOTPAndPassword(userDto);
+		if (!responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+			return responseEntity;
+		}
+		responseEntity = isPasswordAlreadyUse(userDto.getPassword(), existingUser);
 		if (!responseEntity.getStatusCode().equals(HttpStatus.OK)) {
 			return responseEntity;
 		}
 
-		return null;
+		if (existingUser.getLastPassword().equals("PENDING")) {
+			existingUser.setLastPassword(bcryptEncoder.encode(userDto.getPassword()));
+			userRepo.save(existingUser);
+			jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.PASSWORD_SUCESSFULLY_RESET);
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
+		}
+		existingUser.setLastPassword(existingUser.getPassword());
+		existingUser.setPassword(bcryptEncoder.encode(userDto.getPassword()));
+		userRepo.save(existingUser);
+		jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.PASSWORD_SUCESSFULLY_RESET);
+		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
+
+	}
+
+	@Override
+	public ResponseEntity<?> updatePassword(Long id, String password) throws JSONException {
+		User existingUser = null;
+		ResponseEntity<?> responseEntity = null;
+		JSONObject jsonObject = new JSONObject();
+		existingUser = findById(id);
+
+		if (existingUser == null) {
+			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.USER_NOT_EXISTS);
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
+		}
+
+		responseEntity = isPasswordAlreadyUse(password, existingUser);
+		if (!responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+			return responseEntity;
+		}
+
+		if (existingUser.getLastPassword().equals("PENDING")) {
+			existingUser.setLastPassword(bcryptEncoder.encode(password));
+			userRepo.save(existingUser);
+			jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.PASSWORD_SUCESSFULLY_RESET);
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
+		}
+		existingUser.setLastPassword(existingUser.getPassword());
+		existingUser.setPassword(bcryptEncoder.encode(password));
+		userRepo.save(existingUser);
+
+		jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.PASSWORD_SUCESSFULLY_UPDATED);
+		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
 	}
 
 }

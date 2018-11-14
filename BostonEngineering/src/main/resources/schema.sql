@@ -34,6 +34,8 @@ CREATE TABLE `user_master` (
   `status` varchar(255) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `user_name` varchar(255) DEFAULT NULL,
+  `last_password` varchar(255) DEFAULT NULL,
+  `otp` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_9byi2yd5e68hr1x8ou18fj55c` (`email`),
   UNIQUE KEY `UK_n4n5h37vsp6yjjjq5fl224p43` (`mobile`)
@@ -78,4 +80,4 @@ CREATE TABLE `user_role_master` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-11-05 12:56:33
+-- Dump completed on 2018-11-14 14:01:04
