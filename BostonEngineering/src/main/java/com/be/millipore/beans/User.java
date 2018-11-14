@@ -13,9 +13,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity(name = "user_master")
 public class User {
 
+	@ApiModelProperty(hidden = true)
 	private Long id;
 	private String userName;
 	private String email;
@@ -27,6 +30,12 @@ public class User {
 	private Long lineManageId;
 	private String password;
 	private String status;
+	private String otp;
+	@ApiModelProperty(hidden = true, value = "PENDING")
+	private String password1;
+	@ApiModelProperty(hidden = true, value = "PENDING")
+
+	private String password2;
 
 	private Set<UserRole> role = new HashSet<UserRole>(0);
 
@@ -135,6 +144,30 @@ public class User {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getOtp() {
+		return otp;
+	}
+
+	public void setOtp(String otp) {
+		this.otp = otp;
+	}
+
+	public String getPassword1() {
+		return password1;
+	}
+
+	public void setPassword1(String password1) {
+		this.password1 = password1;
+	}
+
+	public String getPassword2() {
+		return password2;
+	}
+
+	public void setPassword2(String password2) {
+		this.password2 = password2;
 	}
 
 }

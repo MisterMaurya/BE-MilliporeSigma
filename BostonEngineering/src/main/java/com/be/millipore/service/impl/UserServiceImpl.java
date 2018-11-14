@@ -3,6 +3,7 @@ package com.be.millipore.service.impl;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -21,9 +22,12 @@ import org.springframework.stereotype.Service;
 import com.be.millipore.beans.User;
 import com.be.millipore.beans.UserRole;
 import com.be.millipore.constant.APIConstant;
+import com.be.millipore.dto.UserDto;
 import com.be.millipore.repository.UserRepo;
 import com.be.millipore.repository.UserRoleRepo;
+import com.be.millipore.service.EmailService;
 import com.be.millipore.service.UserService;
+import com.sendgrid.Response;
 
 @Service(value = "userService")
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -37,10 +41,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Autowired
 	private BCryptPasswordEncoder bcryptEncoder;
 
+	@Autowired
+	private EmailService emailService;
+
 	@Override
 	public User save(User user) {
+		User isSave = null;
+		String otp = generateOTP();
+		user.setOtp(otp);
 		user.setPassword(bcryptEncoder.encode(user.getPassword()));
-		return userRepo.save(user);
+		isSave = userRepo.save(user);
+
+		Response response = emailService.sendHTML(APIConstant.ORGANISATION_EMAIL, user.getEmail(), APIConstant.SUBJECT,
+				"<strong>Hi Mr " + user.getFullName()
+						+ ",</strong> <br><br> <i>you already have access to your boston Account and Please reset the password using OTP(One Time Password)</i> : <strong>"
+						+ otp + "</strong>");
+		System.out.println(response.getStatusCode());
+		return isSave;
 	}
 
 	@Override
@@ -134,8 +151,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 		existingUser = findByEmail(user.getEmail());
 
-		//
-
 		if (existingUser != null && existingUser.getId() != user.getId()) {
 			return new ResponseEntity<String>(
 					jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.EMAIL_ALREADY_EXISTS).toString(),
@@ -178,8 +193,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			}
 		}
 		if (!user.getStatus().equals("N")) {
-			user.setStatus("Y");
+			user.setStatus("N");
 		}
+
 		return null;
 	}
 
@@ -189,13 +205,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		for (User user : userRepo.findAll()) {
 			if (user.getStatus().equals("Y")) {
 				for (UserRole userRole : user.getRole()) {
-					if (userRole.getUserRole().equals("Manager")) {
+					if (userRole.getUserRole().equals("MANAGER")) {
 						activeManager.add(user);
 					}
 				}
 			}
 
 		}
+		for (User user : activeManager) {
+			System.out.println("aa " + user.getFullName());
+		}
+
 		return activeManager;
 	}
 
@@ -203,16 +223,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public JSONObject getOneUser(Long id) throws JSONException {
 		boolean isExists = false;
 		JSONObject jsonObject = new JSONObject();
-		JSONObject jsonObject2 = new JSONObject();
+		JSONObject temp = null;
 
 		JSONArray jsonArray = new JSONArray();
 		isExists = userRepo.findById(id).isPresent();
 		if (isExists == false) {
 			return null;
 		}
+
 		User user = userRepo.findById(id).get();
+
 		jsonObject.put("id", user.getId());
-		jsonObject.put("userId", user.getUserName());
+		jsonObject.put("userName", user.getUserName());
 		jsonObject.put("email", user.getEmail());
 		jsonObject.put("fullName", user.getFullName());
 		jsonObject.put("title", user.getTitle());
@@ -221,14 +243,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		jsonObject.put("mobile", user.getMobile());
 		jsonObject.put("lineManageId", user.getLineManageId());
 		jsonObject.put("status", user.getStatus());
+		jsonObject.put("password", user.getPassword());
 
 		for (UserRole userRole : user.getRole()) {
-			jsonObject2.put("userRoleId", userRole.getUserRoleId());
-			jsonObject2.put("userRole", userRole.getUserRole());
-
+			temp = new JSONObject();
+			temp.put("userRoleId", userRole.getUserRoleId());
+			temp.put("userRole", userRole.getUserRole());
+			jsonArray.put(temp);
+			temp = null;
 		}
-
-		jsonArray.put(jsonObject2);
 		jsonObject.put("role", jsonArray);
 
 		return jsonObject;
@@ -253,6 +276,86 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		});
 		return authorities;
 		// return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+	}
+
+// ******* generateOTP() will be generate the 6 digit OTP(One Time Password)
+
+	private String generateOTP() {
+		char[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
+		Random rnd = new Random();
+		String generate = "";
+		for (int i = 0; i < 6; i++) {
+			generate = generate + chars[rnd.nextInt(chars.length)];
+		}
+		return generate;
+	}
+
+// ******* matchOTPAndPassword(UserDto userDto) will check Email's OTP and user entered OTP are match or not  and also will check password and confirm password are equals or  not
+
+	private ResponseEntity<?> matchOTPAndPassword(UserDto userDto) throws JSONException {
+		User existingUser = null;
+		JSONObject jsonObject = new JSONObject();
+		existingUser = userRepo.findByEmail(userDto.getEmail());
+
+		// if email not exists
+
+		if (existingUser == null) {
+			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.USER_NOT_EXISTS);
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
+		}
+
+		// if password and and confirm password dose'nt match
+
+		if (!userDto.getPassword().equals(userDto.getConfirmPassword())) {
+			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.PASSWORD_NOT_MATCH);
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
+		}
+
+		// if OTP dose'nt match with email received OTP
+
+		if (!userDto.getOtp().equals(existingUser.getOtp())) {
+			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.OTP_NOT_VALID);
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<?> verfityUser(UserDto userDto) throws JSONException {
+		User existingUser = null;
+		JSONObject jsonObject = new JSONObject();
+		existingUser = userRepo.findByEmail(userDto.getEmail());
+		// if user already verified
+
+		if (existingUser.getStatus().equals("Y")) {
+			jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.USERID_ALREADY_VERIFIED);
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
+		}
+
+		ResponseEntity<?> responseEntity = matchOTPAndPassword(userDto);
+		if (!responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+			return responseEntity;
+		}
+		existingUser.setPassword(bcryptEncoder.encode(userDto.getPassword())); // update password
+		existingUser.setStatus("Y"); // update status
+		userRepo.save(existingUser);
+		jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.VERIFY_SUCCESSFULLY);
+		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
+
+	}
+
+	@Override
+	public ResponseEntity<?> forgotPassword(UserDto userDto) throws JSONException {
+		User existingUser = null;
+		JSONObject jsonObject = new JSONObject();
+		existingUser = userRepo.findByEmail(userDto.getEmail());
+		ResponseEntity<?> responseEntity = matchOTPAndPassword(userDto);
+		if (!responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+			return responseEntity;
+		}
+
+		return null;
 	}
 
 }

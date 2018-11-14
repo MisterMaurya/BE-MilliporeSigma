@@ -23,14 +23,11 @@
 	
 	 <div class="container">
       <form class="form-signin" method="Post" action="/login">
-      
-      
-     
-        <h2 class="form-signin-heading">Please sign in</h2>
+     <h2 class="form-signin-heading">Please sign in</h2>
         <label for="inputUsername" class="sr-only">Username</label>
-        <input type="text" id="inputEmail" class="form-control" placeholder="Username" required autofocus>
+        <input type="text" id="inputEmail" class="form-control" name ="userName" placeholder="Username" required autofocus>
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <input type="password" id="inputPassword" class="form-control" name="password" placeholder="Password" required>
         <div class="checkbox">
           <label>
             <input type="checkbox" value="remember-me"> Remember me

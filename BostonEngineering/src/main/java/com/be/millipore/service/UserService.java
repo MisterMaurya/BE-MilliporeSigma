@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 
 import com.be.millipore.beans.User;
+import com.be.millipore.dto.UserDto;
 
 public interface UserService {
 
@@ -33,5 +34,9 @@ public interface UserService {
 	public List<User> getAllActiveManager(); // Return All Manager have status Active('Y')
 
 	JSONObject getOneUser(Long id) throws JSONException; // get One user with additional details
+
+	public ResponseEntity<?> verfityUser(UserDto userDto) throws JSONException; // verify user
+
+	public ResponseEntity<?> forgotPassword(UserDto userDto) throws JSONException; // forgot password
 
 }

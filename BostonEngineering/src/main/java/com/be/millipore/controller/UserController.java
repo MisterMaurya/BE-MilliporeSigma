@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.be.millipore.beans.User;
 import com.be.millipore.beans.UserRole;
 import com.be.millipore.constant.APIConstant;
+import com.be.millipore.dto.UserDto;
 import com.be.millipore.service.UserService;
 
 import io.swagger.annotations.Api;
@@ -47,6 +48,7 @@ public class UserController {
 		if (responseEntity != null) {
 			return responseEntity;
 		}
+
 		userService.save(user);
 		return new ResponseEntity<>(
 				jsonObject.put(APIConstant.USER_CREATE_STATUS, APIConstant.USER_SUCCESSFULLY_CREATED).toString(),
@@ -77,15 +79,13 @@ public class UserController {
 
 // (3). ****** GET ONE USER ****//
 
-	// @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-
 	@ApiOperation(value = APIConstant.GET_ONE_USER)
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
 			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
 	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = APIConstant.REST_ID_PARAM, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getUser(@PathVariable Long id) throws JSONException {
+	public ResponseEntity<?> getOneUser(@PathVariable Long id) throws JSONException {
 		User existingUser = null;
 		JSONObject jsonObject = new JSONObject();
 		existingUser = userService.findById(id);
@@ -152,6 +152,28 @@ public class UserController {
 	@RequestMapping(value = APIConstant.ALL_ACTIVE_MANAGER, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getAllActiveManager() {
 		return new ResponseEntity<>(userService.getAllActiveManager(), HttpStatus.OK);
+	}
+
+// (7). VERIFY USER
+
+	@ApiOperation(value = APIConstant.VERIFY_USER)
+	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
+			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
+			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
+	@RequestMapping(value = APIConstant.VERIFY, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> verifiedUser(@RequestBody UserDto userDto) throws JSONException {
+		return new ResponseEntity<>(userService.verfityUser(userDto), HttpStatus.OK);
+	}
+
+// (8). FORGOT PASSWORD 
+
+	@ApiOperation(value = APIConstant.FORGOT_PASSWORD)
+	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
+			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
+			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
+	@RequestMapping(value = APIConstant.FORGOT, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> forgotPassword(@RequestBody UserDto userDto) throws JSONException {
+		return new ResponseEntity<>(userService.verfityUser(userDto), HttpStatus.OK);
 	}
 
 }

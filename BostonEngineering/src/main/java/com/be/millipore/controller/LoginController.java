@@ -35,8 +35,10 @@ public class LoginController {
 	@Autowired
 	private TokenProvider jwtTokenUtil;
 
+// (1). ****** LOGIN API ****//	
+
 	@ResponseBody
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ApiOperation(value = APIConstant.USER_LOGIN)
 	public ResponseEntity<?> login(@RequestBody LoginUser loginUser) throws AuthenticationException {
 
@@ -48,6 +50,8 @@ public class LoginController {
 		final String token = jwtTokenUtil.generateToken(authentication);
 		return ResponseEntity.ok(new AuthToken(token));
 	}
+
+// (2). ****** LOGIN JSP ****//	
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String indexPage(ModelMap model) {
