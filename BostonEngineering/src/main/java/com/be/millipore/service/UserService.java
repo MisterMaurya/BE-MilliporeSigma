@@ -44,4 +44,7 @@ public interface UserService {
 	public ResponseEntity<?> sendOtpForForgotPassword(String email) throws JSONException; // send OTP for forgot
 																							// password
 
+	public ResponseEntity<?> isOTPResetLinkExpired(String email) throws JSONException; // check Reset OTP Link Expired
+																						// is expired or not
+
 }

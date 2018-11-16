@@ -51,11 +51,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		user.setOtp(otp);
 		user.setPassword(bcryptEncoder.encode(user.getPassword()));
 		user.setLastPassword("PENDING");
+		/*
+		 * Response response = emailService.sendHTML(APIConstant.ORGANISATION_EMAIL,
+		 * user.getEmail(), APIConstant.SUBJECT, "<strong>Hey " + user.getFullName() +
+		 * ",</strong> <br><br> <i>you already have access to your boston Account and Please reset the password using OTP(One Time Password)</i> : <strong>"
+		 * + otp + "</strong>");
+		 */
 
-		Response response = emailService.sendHTML(APIConstant.ORGANISATION_EMAIL, user.getEmail(), APIConstant.SUBJECT,
-				"<strong>Hey " + user.getFullName()
-						+ ",</strong> <br><br> <i>you already have access to your boston Account and Please reset the password using OTP(One Time Password)</i> : <strong>"
-						+ otp + "</strong>");
+		Response response = emailService.sendOtpTemplate(APIConstant.ORGANISATION_EMAIL, user.getEmail(),
+				APIConstant.SUBJECT, APIConstant.VERIFY_TEMPLATE_ID, otp);
+
 		System.out.println(response.getStatusCode());
 		isSave = userRepo.save(user);
 		return isSave;
@@ -313,7 +318,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		}
 
 		// if OTP dose'nt match with email received OTP
-
 		if (!userDto.getOtp().equals(existingUser.getOtp())) {
 			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.OTP_NOT_VALID);
 			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
@@ -385,7 +389,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 		existingUser.setLastPassword(existingUser.getPassword());
 		existingUser.setPassword(bcryptEncoder.encode(userDto.getPassword()));
-		existingUser.setOtp("");
+		existingUser.setOtp("XXXX");
 		userRepo.save(existingUser);
 		jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.PASSWORD_SUCESSFULLY_RESET);
 		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
@@ -428,16 +432,37 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		}
 		String otp = generateOTP();
 		existingUser.setOtp(otp);
-		Response response = emailService.sendHTML(APIConstant.ORGANISATION_EMAIL, existingUser.getEmail(),
-				APIConstant.SUBJECT,
-				"<strong>Hello " + existingUser.getFullName()
-						+ ",</strong> <br><br> <i>A request has been received to forgot the password for your <b>Boston Account.</b>Your OTP(One Time Password) is</i> : <strong>"
-						+ otp + "</strong>");
+		existingUser.setLinkExpired(true);
 
+		Response response = emailService.sendOtpTemplate(APIConstant.ORGANISATION_EMAIL, existingUser.getEmail(),
+				APIConstant.SUBJECT, APIConstant.FORGOT_TEMPLATE_ID, otp);
 		userRepo.save(existingUser);
 		System.out.println(response.getStatusCode());
 		jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.OTP_SEND);
 		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<?> isOTPResetLinkExpired(String email) throws JSONException {
+		User existingUser = null;
+		JSONObject jsonObject = new JSONObject();
+		existingUser = userRepo.findByEmail(email);
+
+		if (existingUser == null) {
+			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.USER_NOT_EXISTS);
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
+		}
+
+		if (existingUser.isLinkExpired()) {
+			existingUser.setLinkExpired(false);
+			userRepo.save(existingUser);
+			jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.LINK_NOT_EXPIRED);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+
+		jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.LINK_EXPIRED);
+		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
+
 	}
 
 }

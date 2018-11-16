@@ -172,7 +172,7 @@ public class UserController {
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
 			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
-	@RequestMapping(value = APIConstant.SEND_FORGOT_PASSWORD_OTP, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = APIConstant.RESET, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> sendOtpForForgotPassword(String email) throws JSONException {
 		return userService.sendOtpForForgotPassword(email);
 	}
@@ -198,6 +198,17 @@ public class UserController {
 	public ResponseEntity<?> updatePassword(@PathVariable("id") Long id, @RequestParam("password") String password)
 			throws JSONException {
 		return userService.updatePassword(id, password);
+	}
+
+// (11). RESET LINK VALIDATE	
+
+	@ApiOperation(value = APIConstant.RESET_LINK_VALIDATE)
+	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
+			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
+			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
+	@RequestMapping(value = APIConstant.RESET, method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	public ResponseEntity<?> reset(@RequestParam("email") String email) throws JSONException {
+		return userService.isOTPResetLinkExpired(email);
 	}
 
 }

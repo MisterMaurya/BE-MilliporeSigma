@@ -31,7 +31,11 @@ public class User {
 	private String password;
 	private String status;
 	private String otp;
+
+	@ApiModelProperty(hidden = true)
 	private String lastPassword;
+	@ApiModelProperty(hidden = true)
+	private boolean linkExpired;
 
 	private Set<UserRole> role = new HashSet<UserRole>(0);
 
@@ -156,6 +160,14 @@ public class User {
 
 	public void setLastPassword(String lastPassword) {
 		this.lastPassword = lastPassword;
+	}
+
+	public boolean isLinkExpired() {
+		return linkExpired;
+	}
+
+	public void setLinkExpired(boolean linkExpired) {
+		this.linkExpired = linkExpired;
 	}
 
 }

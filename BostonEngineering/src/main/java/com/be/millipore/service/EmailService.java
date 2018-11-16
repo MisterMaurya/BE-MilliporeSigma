@@ -8,4 +8,6 @@ public interface EmailService {
 
 	Response sendHTML(String from, String to, String subject, String body); // IF YOU WANT TO SEND HTML CONTENT
 
+	Response sendOtpTemplate(String from, String to, String subject, String templateId, String otp);
+
 }

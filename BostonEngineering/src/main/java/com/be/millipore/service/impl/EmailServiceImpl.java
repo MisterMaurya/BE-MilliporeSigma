@@ -10,6 +10,7 @@ import com.sendgrid.Content;
 import com.sendgrid.Email;
 import com.sendgrid.Mail;
 import com.sendgrid.Method;
+import com.sendgrid.Personalization;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
@@ -57,4 +58,38 @@ public class EmailServiceImpl implements EmailService {
 
 		return response;
 	}
+
+	@Override
+	public Response sendOtpTemplate(String from, String to, String subject, String templateId,
+			String otp) {
+		Response response = sendTemplate(from, to, subject, templateId, otp);
+		System.out.println("Status Code: " + response.getStatusCode() + ", Body: " + response.getBody() + ", Headers: "
+				+ response.getHeaders());
+		return response;
+	}
+
+	private Response sendTemplate(String from, String to, String subject, String templateId, String otp) {
+		Mail mail = new Mail();
+		mail.setFrom(new Email(from));
+		mail.setReplyTo(new Email("no-reply@boston.com"));
+		mail.setTemplateId(templateId);
+		Personalization personalization = new Personalization();
+		personalization.addDynamicTemplateData("subject", subject);
+		personalization.addDynamicTemplateData("otp", otp);
+		personalization.addTo(new Email(to));
+		mail.addPersonalization(personalization);
+		Response response = null;
+
+		Request request = new Request();
+		try {
+			request.setMethod(Method.POST);
+			request.setEndpoint("mail/send");
+			request.setBody(mail.build());
+			response = this.sendGridClient.api(request);
+		} catch (IOException ex) {
+			System.out.println(ex.getMessage());
+		}
+		return response;
+	}
+
 }

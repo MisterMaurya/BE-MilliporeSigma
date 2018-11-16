@@ -35,7 +35,8 @@ public class APIConstant {
 	public static final String VERIFY = "/verify";
 	public static final String USER_STATUS = "status";
 	public static final String FORGOT = "/forgot";
-	public static final String UPDATE_PASSWORD = "/updatepasssword/{id}";
+	public static final String RESET = "/reset";
+	public static final String UPDATE_PASSWORD = "/update/passsword/{id}";
 
 //*** USER API OPERATIONS ***//	
 
@@ -45,6 +46,11 @@ public class APIConstant {
 	public static final String GET_ALL_USER = "Get All User";
 	public static final String CHANGE_STATUS = "Change User Status";
 	public static final String GET_ALL_ACIVE_MANAGER = "Get All Active Manager";
+	public static final String VERIFY_USER = "Verify User";
+	public static final String FORGOT_PASSWORD = "Forgot Password";
+	public static final String RESET_LINK_VALIDATE = "Reset Link Validate ";
+	public static final String SEND_OTP_FOR_FORGOT_PASSWORD = "Send Otp For Forgot Password";
+	public static final String UPDATE_PASSWORD_OPERATION = "Update Password";
 
 //*** USER ROLE API OPERATIONS ***//
 
@@ -53,14 +59,6 @@ public class APIConstant {
 //*** USER LOGIN API OPERATIONS ***//
 
 	public static final String USER_LOGIN = "User Login";
-
-//*** USER VERIFY  API OPERATIONS ***//	
-
-	public static final String VERIFY_USER = "Verify user";
-
-//*** USER FORGOT PASSWORD  API OPERATIONS ***//	
-
-	public static final String FORGOT_PASSWORD = "Forgot password";
 
 //*** SWAGGER TAG AND DESCRIPTION   ***
 
@@ -88,12 +86,13 @@ public class APIConstant {
 	public static final String OTP_NOT_VALID = "Please Enter valid One Time Password(OTP)";
 	public static final String VERIFY_SUCCESSFULLY = "User Successfully verified";
 	public static final String USERID_ALREADY_VERIFIED = "User already verified";
-	public static final String PASSWORD_ALREADY_IN_USE = "this is your l";
 	public static final String PASSWORD_SUCESSFULLY_RESET = "Password successfully reset";
 	public static final String PASSWORD_SUCESSFULLY_UPDATED = "Password successfully updated";
-	public static final String UPDATE_PASSWORD_OPERATION = "Update password";
-	public static final String SEND_OTP_FOR_FORGOT_PASSWORD = "send otp for forgot password";
 	public static final String OTP_SEND = "OTP (One Time Password) send successfully";
-	public static final String SEND_FORGOT_PASSWORD_OTP = "/send_otp";
+	public static final String LINK_EXPIRED = "Reset OTP link expired!";
+	public static final String LINK_NOT_EXPIRED = "Reset link not expired till now";
+
+	public static final String VERIFY_TEMPLATE_ID = "d-VERIFY_TEMPLATE_ID";
+	public static final String FORGOT_TEMPLATE_ID = "d-FORGOT_TEMPLATE_ID";
 
 }
