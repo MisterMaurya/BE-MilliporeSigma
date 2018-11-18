@@ -36,10 +36,11 @@ CREATE TABLE `user_master` (
   `user_name` varchar(255) DEFAULT NULL,
   `last_password` varchar(255) DEFAULT NULL,
   `otp` varchar(255) DEFAULT NULL,
+  `link_expired` bit(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_9byi2yd5e68hr1x8ou18fj55c` (`email`),
   UNIQUE KEY `UK_n4n5h37vsp6yjjjq5fl224p43` (`mobile`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,4 +81,4 @@ CREATE TABLE `user_role_master` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-11-14 14:01:04
+-- Dump completed on 2018-11-18 18:54:31

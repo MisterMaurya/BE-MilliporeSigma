@@ -1,5 +1,8 @@
 package com.be.millipore.controller;
 
+import java.security.Principal;
+import java.util.ArrayList;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,10 +118,20 @@ public class UserController {
 	@ApiOperation(value = APIConstant.GET_ALL_USER)
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN), })
-	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getAllUser() {
-		return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
+	public ResponseEntity<?> getAllUser(Principal principal) {
+		ArrayList<String> list = new ArrayList<>();
+		list.add("ADMIN");
+		System.out.println("List : " + list);
+		User existingUser = userService.findByUserName(principal.getName());
+		for (UserRole role : existingUser.getRole()) {
+			for (String dbRole : list) {
+				if (role.getUserRole().equals(dbRole)) {
+					return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
+				}
+			}
+		}
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 	}
 
 // (5). ****** CHANGE USER STATUS ****//

@@ -21,9 +21,17 @@ import com.be.millipore.security.JwtAuthenticationEntryPoint;
 import com.be.millipore.security.JwtAuthenticationFilter;
 
 @Configuration
+
+//Enable security configuration. This annotation denotes configuration for spring security.
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(securedEnabled = true)
+
+/*
+ * In this line, we
+ * activate @PreFilter, @PreAuthorize, @PostFilter, @PostAuthorize annotations
+ * on any spring beans in the context.
+ */
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Resource(name = "userService")
@@ -50,24 +58,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-
-		http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-
+		/*
+		 * We do not need csrf(Cross-site request forgery) protection because our tokens
+		 * are immune to it.
+		 */
+		http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+				/*
+				 * make sure we use stateless session; session won't be used to store user's
+				 * state.
+				 */
+				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+				.authorizeRequests()
 				.antMatchers("/v2/api-docs", "/swagger-resources/configuration/ui", "/swagger-resources",
 						"/swagger-resources/configuration/security", "/swagger-ui.html", "/webjars/**")
 				.permitAll()
-
 				.antMatchers("/", "/favicon.ico", "/**/*.png", "/**/*.gif", "/**/*.svg", "/**/*.jpg", "/**/*.html",
 						"/**/*.css", "/**/*.js")
-
 				.permitAll()
-
 				.antMatchers("/boston/user/email/**", "/login/**", "/boston/", "/bootstrap/**", "/jquery/**", "/css/**",
 						" /js/**", "/images/**")
-				.permitAll().antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-				.anyRequest().authenticated().and()
+				.permitAll().antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated().and()
 				.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
 
 	}

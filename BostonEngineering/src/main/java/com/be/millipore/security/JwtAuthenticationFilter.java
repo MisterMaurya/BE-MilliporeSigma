@@ -1,5 +1,6 @@
 package com.be.millipore.security;
 
+import static com.be.millipore.constant.SecurityConstant.HEADER_STRING;
 import static com.be.millipore.constant.SecurityConstant.TOKEN_PREFIX;
 
 import java.io.IOException;
@@ -30,8 +31,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
 			throws IOException, ServletException {
-		String header = req.getHeader("Authorization");
-		System.out.println("HEADER-->" + header + "<--");
+		String header = req.getHeader(HEADER_STRING);
+
+		System.out.println("HEADER--->" + header + "<-----");
 
 		String username = null;
 		String authToken = null;
@@ -63,6 +65,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			}
 		}
 
+		/*
+		 * As this authentication is in HTTP header, after success we need to continue
+		 * the request normally and return the response as if the resource was not
+		 * secured at all
+		 */
 		chain.doFilter(req, res);
 	}
 }
