@@ -12,8 +12,9 @@ public class APIAccessControl {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@ApiModelProperty(hidden = true)
+
 	private Long id;
+	@ApiModelProperty(hidden = true)
 	private String apiName;
 	private String adminAccess;
 	private String managerAccess;

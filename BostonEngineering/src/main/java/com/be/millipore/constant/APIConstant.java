@@ -22,6 +22,8 @@ public class APIConstant {
 	public static final String ORGANISATION_EMAIL = "noreply@boston.com";
 	public static final String SUBJECT = "Welcome to Boston!";
 	public static final String SOMETHING_WENT_WRONG = "something went wrong";
+	public static final String ACCESS_CONTROL_ID_NOT_EXISIS = "Access control id not exisis";
+	public static final String ACCESS_CONTROL_UPDATED = "Access Control successfully updated";
 
 //*** REST BASE URL***//
 
@@ -37,6 +39,7 @@ public class APIConstant {
 	public static final String FORGOT = "/forgot";
 	public static final String RESET = "/reset";
 	public static final String UPDATE_PASSWORD = "/update/passsword/{id}";
+	public static final String ACCESS_CONTROL_UPDATE = "/access/control/{id}";
 
 //*** USER API OPERATIONS ***//	
 
@@ -51,6 +54,7 @@ public class APIConstant {
 	public static final String RESET_LINK_VALIDATE = "Reset Link Validate ";
 	public static final String SEND_OTP_FOR_FORGOT_PASSWORD = "Send Otp For Forgot Password";
 	public static final String UPDATE_PASSWORD_OPERATION = "Update Password";
+	public static final String UPDATE_ACCESS_CONTROL = "Update Access Control";
 
 //*** USER ROLE API OPERATIONS ***//
 

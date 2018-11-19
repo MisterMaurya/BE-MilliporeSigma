@@ -225,4 +225,13 @@ public class UserController {
 		return userService.isOTPResetLinkExpired(email);
 	}
 
+// (12). UPDATE ACCESS CONTROL
+
+	@ApiOperation(value = APIConstant.UPDATE_ACCESS_CONTROL)
+	@RequestMapping(value = APIConstant.ACCESS_CONTROL_UPDATE, method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	public ResponseEntity<?> updateAccessControl(@PathVariable Long id, @RequestBody APIAccessControl accessControl)
+			throws JSONException {
+		return accessControlService.updateAccessControl(id, accessControl);
+	}
+
 }

@@ -14,4 +14,6 @@ public interface APIAccessControlService {
 	// send the response that REST API is accessible or not
 	public ResponseEntity<?> accessControl(APIAccessControl accessControl, Principal principal) throws JSONException;
 
+	// update access control
+	public ResponseEntity<?> updateAccessControl(Long id, APIAccessControl accessControl) throws JSONException;
 }
