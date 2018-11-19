@@ -47,4 +47,6 @@ public interface UserService {
 	public ResponseEntity<?> isOTPResetLinkExpired(String email) throws JSONException; // check Reset OTP Link Expired
 																						// is expired or not
 
+	public String getConcatString(Long id);
+
 }

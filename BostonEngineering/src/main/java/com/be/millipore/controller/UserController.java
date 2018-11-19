@@ -1,7 +1,6 @@
 package com.be.millipore.controller;
 
 import java.security.Principal;
-import java.util.ArrayList;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,10 +17,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.be.millipore.beans.APIAccessControl;
 import com.be.millipore.beans.User;
 import com.be.millipore.beans.UserRole;
 import com.be.millipore.constant.APIConstant;
+import com.be.millipore.constant.DBConstant;
 import com.be.millipore.dto.UserDto;
+import com.be.millipore.service.APIAccessControlService;
 import com.be.millipore.service.UserService;
 
 import io.swagger.annotations.Api;
@@ -37,6 +39,9 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private APIAccessControlService accessControlService;
 
 // (1). ****** CREATE A NEW USER ****//
 
@@ -119,19 +124,15 @@ public class UserController {
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN), })
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getAllUser(Principal principal) {
-		ArrayList<String> list = new ArrayList<>();
-		list.add("ADMIN");
-		System.out.println("List : " + list);
-		User existingUser = userService.findByUserName(principal.getName());
-		for (UserRole role : existingUser.getRole()) {
-			for (String dbRole : list) {
-				if (role.getUserRole().equals(dbRole)) {
-					return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
-				}
-			}
+	public ResponseEntity<?> getAllUser(Principal principal) throws JSONException {
+		JSONObject jsonObject = new JSONObject();
+		APIAccessControl accessControl = accessControlService.findByApiName(DBConstant.GET_ALL_USER_RESOURCE);
+		ResponseEntity<?> responseEntity = accessControlService.accessControl(accessControl, principal);
+		if (responseEntity.getStatusCode() != HttpStatus.OK) {
+			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.FORBIDDEN);
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.UNAUTHORIZED);
 		}
-		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
 	}
 
 // (5). ****** CHANGE USER STATUS ****//

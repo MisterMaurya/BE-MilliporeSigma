@@ -465,4 +465,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	}
 
+	@Override
+	public String getConcatString(Long id) {
+
+		return userRepo.concat(id);
+	}
+
 }
