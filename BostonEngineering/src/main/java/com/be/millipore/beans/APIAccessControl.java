@@ -12,7 +12,7 @@ public class APIAccessControl {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-
+	
 	private Long id;
 	@ApiModelProperty(hidden = true)
 	private String apiName;

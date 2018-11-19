@@ -39,7 +39,8 @@ public class SwaggerConfig {
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
 				.tags(new Tag(APIConstant.USER_CONTROLLER_TAG, APIConstant.USER_CONTROLLER_DESCRIPTION),
 						new Tag(APIConstant.USER_ROLE_CONTROLLER_TAG, APIConstant.USER_ROLE_CONTROLLER_DESCRIPTION),
-						new Tag(APIConstant.USER_LOGIN_TAG, APIConstant.USER_LOGIN_DESCRIPTION))
+						new Tag(APIConstant.USER_LOGIN_TAG, APIConstant.USER_LOGIN_DESCRIPTION),
+						new Tag(APIConstant.TEMPLATE_CONTROLLER_TAG, APIConstant.TEMPLATE_CONTROLLER_DESCRIPTION))
 				.select().apis(RequestHandlerSelectors.basePackage("com.be.millipore")).build()
 				.securitySchemes(Arrays.asList(apiKey()));
 	}

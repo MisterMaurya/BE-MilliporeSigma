@@ -40,6 +40,7 @@ public class APIConstant {
 	public static final String RESET = "/reset";
 	public static final String UPDATE_PASSWORD = "/update/passsword/{id}";
 	public static final String ACCESS_CONTROL_UPDATE = "/access/control/{id}";
+	public static final String REST_TEMPLATE_URL = "/template";
 
 //*** USER API OPERATIONS ***//	
 
@@ -56,6 +57,10 @@ public class APIConstant {
 	public static final String UPDATE_PASSWORD_OPERATION = "Update Password";
 	public static final String UPDATE_ACCESS_CONTROL = "Update Access Control";
 
+//*** TEMPLATE API OPERATIONS ***//		
+
+	public static final String TEMPLATE_CREATE = "Create A New Template";
+
 //*** USER ROLE API OPERATIONS ***//
 
 	public static final String GET_ALL_USER_ROLE = "Get All User Role";
@@ -69,10 +74,12 @@ public class APIConstant {
 	public static final String USER_CONTROLLER_TAG = "USER CONTROLLER APIs";
 	public static final String USER_ROLE_CONTROLLER_TAG = "USER ROLE CONTROLLER APIs";
 	public static final String USER_LOGIN_TAG = "USER_LOGIN_APIs";
+	public static final String TEMPLATE_CONTROLLER_TAG = "TEMPLATE CONTROLLER APIs";
 
 	public static final String USER_CONTROLLER_DESCRIPTION = "OPERATIONS PERTAINING TO BOSTON USER";
 	public static final String USER_ROLE_CONTROLLER_DESCRIPTION = "BOSTON USER ROLE";
 	public static final String USER_LOGIN_DESCRIPTION = "USER LOGIN OPERATION";
+	public static final String TEMPLATE_CONTROLLER_DESCRIPTION = "TEMPLATE OPERATIONS";
 
 //*** SWAGGER  OPERATION NOTE   ***	
 
@@ -98,5 +105,7 @@ public class APIConstant {
 
 	public static final String VERIFY_TEMPLATE_ID = "d-VERIFY_TEMPLATE_ID";
 	public static final String FORGOT_TEMPLATE_ID = "d-FORGOT_TEMPLATE_ID";
+	public static final String TEMPLATE_NOT_SAVED = "Template not save! Something went wrong";
+	public static final String TEMPLATE_SUCCESSFULLY_CREATED = "Template successfully created";
 
 }
