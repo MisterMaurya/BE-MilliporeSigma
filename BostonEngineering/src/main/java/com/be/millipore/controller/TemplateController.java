@@ -1,5 +1,6 @@
 package com.be.millipore.controller;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -20,8 +21,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.be.millipore.beans.Template;
+import com.be.millipore.beans.User;
 import com.be.millipore.constant.APIConstant;
+import com.be.millipore.dto.UserTemplateDto;
+import com.be.millipore.service.TemplateKeyAndValueService;
 import com.be.millipore.service.TemplateService;
+import com.be.millipore.service.UserService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,6 +40,12 @@ public class TemplateController {
 
 	@Autowired
 	private TemplateService templateService;
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private TemplateKeyAndValueService keyAndValueService;
 
 // (1). ****** CREATE A NEW TEMPLATE FOR USER***//	
 
@@ -55,12 +66,21 @@ public class TemplateController {
 // (2). ****** GET A TEMPLATE AND Dynamic Values **//	
 
 	@ApiOperation(value = APIConstant.GET_TEMPLATE)
-	@RequestMapping(value = APIConstant.REST_ID_PARAM, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getTemplate(@PathVariable Long id) throws JSONException {
+	@RequestMapping(value = APIConstant.REST_ID_PARAM, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> getTemplate(@PathVariable Long id, @RequestBody UserTemplateDto userTemplateDto)
+			throws JSONException, NoSuchMethodException, SecurityException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
 		JSONObject jsonObject = new JSONObject();
 		Template existingTemplate = templateService.findById(id);
 		if (existingTemplate == null) {
 			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.TEMPLATE_ID_NOT_EXISTS);
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
+		}
+
+		User existingUser = null;
+		existingUser = userService.findByEmail(userTemplateDto.getEmail());
+		if (existingUser == null) {
+			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.EMAIL_NOT_EXISTS);
 			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
 		}
 
@@ -70,16 +90,18 @@ public class TemplateController {
 		Map<String, String> valuesMap = new HashMap<String, String>();
 		Iterator<String> iterator = getDynamicData.iterator();
 
-		String cString = "userTemplateDto" + "." + "getName()";
-		System.out.println(cString);
-
 		while (iterator.hasNext()) {
-
-			valuesMap.put(iterator.next(), cString);
+			String key = iterator.next();
+			valuesMap.put(key, keyAndValueService.getUserFieldValue(key, existingUser).toString());
 		}
-
+		String mappedContent = null;
 		StrSubstitutor sub = new StrSubstitutor(valuesMap);
-		String mappedContent = sub.replace(content);
+		try {
+			mappedContent = sub.replace(content);
+		} catch (Exception e) {
+			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.PROVIDE_VALID_DYNAMIC_DATA);
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
+		}
 
 		jsonObject.put(APIConstant.TEMPLATE_CONTENT, mappedContent);
 		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);

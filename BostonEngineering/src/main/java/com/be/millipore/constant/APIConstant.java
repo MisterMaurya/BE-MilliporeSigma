@@ -24,6 +24,10 @@ public class APIConstant {
 	public static final String SOMETHING_WENT_WRONG = "something went wrong";
 	public static final String ACCESS_CONTROL_ID_NOT_EXISIS = "Access control id not exisis";
 	public static final String ACCESS_CONTROL_UPDATED = "Access Control successfully updated";
+	public static final String TEMPLATE_ID_NOT_EXISTS = "Template id not exists";
+	public static final String TEMPLATE_NOT_SAVED = "Template not save! Something went wrong";
+	public static final String TEMPLATE_SUCCESSFULLY_CREATED = "Template successfully created";
+	public static final String TEMPLATE_CONTENT = "content";
 
 //*** REST BASE URL***//
 
@@ -60,6 +64,7 @@ public class APIConstant {
 //*** TEMPLATE API OPERATIONS ***//		
 
 	public static final String TEMPLATE_CREATE = "Create A New Template";
+	public static final String GET_TEMPLATE = "Get A Template";
 
 //*** USER ROLE API OPERATIONS ***//
 
@@ -105,7 +110,7 @@ public class APIConstant {
 
 	public static final String VERIFY_TEMPLATE_ID = "d-VERIFY_TEMPLATE_ID";
 	public static final String FORGOT_TEMPLATE_ID = "d-FORGOT_TEMPLATE_ID";
-	public static final String TEMPLATE_NOT_SAVED = "Template not save! Something went wrong";
-	public static final String TEMPLATE_SUCCESSFULLY_CREATED = "Template successfully created";
+
+	public static final String PROVIDE_VALID_DYNAMIC_DATA = "provide valid dynamic data";
 
 }

@@ -10,5 +10,6 @@ public interface TemplateService {
 
 	public Template findById(Long id);
 
+	// return all the dynamic data key object
 	public List<String> getAllDynamicData(String content);
 }

@@ -42,7 +42,7 @@ public class SwaggerConfig {
 						new Tag(APIConstant.USER_LOGIN_TAG, APIConstant.USER_LOGIN_DESCRIPTION),
 						new Tag(APIConstant.TEMPLATE_CONTROLLER_TAG, APIConstant.TEMPLATE_CONTROLLER_DESCRIPTION))
 				.select().apis(RequestHandlerSelectors.basePackage("com.be.millipore")).build()
-				.securitySchemes(Arrays.asList(apiKey()));
+				.enableUrlTemplating(true).securitySchemes(Arrays.asList(apiKey()));
 	}
 
 	private ApiKey apiKey() {
