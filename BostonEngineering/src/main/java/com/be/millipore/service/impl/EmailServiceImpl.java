@@ -60,8 +60,7 @@ public class EmailServiceImpl implements EmailService {
 	}
 
 	@Override
-	public Response sendOtpTemplate(String from, String to, String subject, String templateId,
-			String otp) {
+	public Response sendOtpTemplate(String from, String to, String subject, String templateId, String otp) {
 		Response response = sendTemplate(from, to, subject, templateId, otp);
 		System.out.println("Status Code: " + response.getStatusCode() + ", Body: " + response.getBody() + ", Headers: "
 				+ response.getHeaders());

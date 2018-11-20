@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-public class UserTemplate {
+public class Template {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

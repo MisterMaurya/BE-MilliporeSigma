@@ -9,7 +9,6 @@ public class BuxtonEngineering {
 	public static void main(String[] args) {
 
 		SpringApplication.run(BuxtonEngineering.class, args);
-
 	}
 
 }
