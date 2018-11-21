@@ -7,5 +7,5 @@ import com.be.millipore.template.beans.TemplateDepartment;
 
 @Repository
 public interface TemplateDepartmentRepo extends CrudRepository<TemplateDepartment, Long> {
-
+	public TemplateDepartment findByTemplateDepartmentId(Long templateDepartmentId);
 }

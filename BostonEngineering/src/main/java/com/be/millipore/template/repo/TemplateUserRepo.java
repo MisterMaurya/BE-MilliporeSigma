@@ -8,4 +8,5 @@ import com.be.millipore.template.beans.TemplateUser;
 @Repository
 public interface TemplateUserRepo extends CrudRepository<TemplateUser, Long> {
 
+	public TemplateUser findByTemplateUserId(Long templateUserId);
 }

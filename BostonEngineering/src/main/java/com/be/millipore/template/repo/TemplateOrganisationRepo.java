@@ -7,5 +7,5 @@ import com.be.millipore.template.beans.TemplateOrganisation;
 
 @Repository
 public interface TemplateOrganisationRepo extends CrudRepository<TemplateOrganisation, Long> {
-
+	public TemplateOrganisation findByTemplateOrganisationId(Long templateOrganisationId);
 }
