@@ -48,16 +48,17 @@ public class TemplateKeyAndValueServiceImpl implements TemplateKeyAndValueServic
 			throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, ClassNotFoundException {
 		TemplateKeyAndValue keyAndValue = findByFieldKey(key);
+		System.out.println("-->>>." + key);
 		if (keyAndValue == null) {
 			return "${" + key + "}";
 		}
 		Class<?> c = Class.forName("com.be.millipore.template.beans.TemplateUser");
 		Class noparams[] = {};
 		String methodName = keyAndValue.getFieldValue();
-
+		System.out.println("-->>>." + methodName);
 		Method method = c.getDeclaredMethod(methodName, noparams);
 		Object value = method.invoke(existingTemplateUser, null);
-		System.out.println(value);
+		System.out.println("Jww--->" + value);
 		return value;
 	}
 

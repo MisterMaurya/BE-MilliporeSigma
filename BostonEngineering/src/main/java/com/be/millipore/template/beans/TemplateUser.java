@@ -16,7 +16,7 @@ import javax.persistence.ManyToMany;
 public class TemplateUser {
 
 	private Long templateUserId;
-	private String fullName;
+	private String name;
 	private String email;
 	private Set<TemplateOrganisation> organisations = new HashSet<TemplateOrganisation>(0);
 	private Set<TemplateDepartment> departments = new HashSet<TemplateDepartment>(0);
@@ -35,12 +35,12 @@ public class TemplateUser {
 		this.templateUserId = templateUserId;
 	}
 
-	public String getFullName() {
-		return fullName;
+	public String getName() {
+		return name;
 	}
 
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getEmail() {
