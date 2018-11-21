@@ -24,4 +24,11 @@ public class TemplateUserServiceImpl implements TemplateUserService {
 		return templateUser;
 	}
 
+	@Override
+	public TemplateUser findByEmail(String email) {
+		TemplateUser templateUser = null;
+		templateUser = templateUserRepo.findByEmail(email);
+		return templateUser;
+	}
+
 }

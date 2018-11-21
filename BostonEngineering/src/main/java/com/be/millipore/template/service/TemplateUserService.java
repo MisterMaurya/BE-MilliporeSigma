@@ -8,4 +8,5 @@ public interface TemplateUserService {
 
 	public TemplateUser findByTemplateUserId(Long templateUserId);
 
+	public TemplateUser findByEmail(String email);
 }

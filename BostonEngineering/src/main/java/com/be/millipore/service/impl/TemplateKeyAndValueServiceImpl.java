@@ -10,6 +10,7 @@ import com.be.millipore.beans.TemplateKeyAndValue;
 import com.be.millipore.beans.User;
 import com.be.millipore.repository.TemplateKeyAndValueRepo;
 import com.be.millipore.service.TemplateKeyAndValueService;
+import com.be.millipore.template.beans.TemplateUser;
 
 @Service
 public class TemplateKeyAndValueServiceImpl implements TemplateKeyAndValueService {
@@ -38,6 +39,24 @@ public class TemplateKeyAndValueServiceImpl implements TemplateKeyAndValueServic
 
 		Method method = c.getDeclaredMethod(methodName, noparams);
 		Object value = method.invoke(existingUser, null);
+		System.out.println(value);
+		return value;
+	}
+
+	@Override
+	public Object getTaskTemplateUserFieldValue(String key, TemplateUser existingTemplateUser)
+			throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, ClassNotFoundException {
+		TemplateKeyAndValue keyAndValue = findByFieldKey(key);
+		if (keyAndValue == null) {
+			return "${" + key + "}";
+		}
+		Class<?> c = Class.forName("com.be.millipore.template.beans.TemplateUser");
+		Class noparams[] = {};
+		String methodName = keyAndValue.getFieldValue();
+
+		Method method = c.getDeclaredMethod(methodName, noparams);
+		Object value = method.invoke(existingTemplateUser, null);
 		System.out.println(value);
 		return value;
 	}

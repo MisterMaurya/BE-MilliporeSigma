@@ -46,6 +46,7 @@ public class APIConstant {
 	public static final String ACCESS_CONTROL_UPDATE = "/access/control/{id}";
 	public static final String REST_TEMPLATE_URL = "/template";
 	public static final String REST_TASK_TEMPLATE_URL = "/task/template";
+	public static final String CREATE_TASK_TEMPLATE_URL = "/create";
 
 //*** USER API OPERATIONS ***//	
 
