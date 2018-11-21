@@ -10,6 +10,7 @@ public class TemplateOrganisation {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+
 	private Long templateOrganisationId;
 	private String name;
 

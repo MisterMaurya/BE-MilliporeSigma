@@ -9,6 +9,7 @@ import javax.persistence.Id;
 public class TemplateDepartment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+
 	private Long templateDepartmentId;
 	private String name;
 
