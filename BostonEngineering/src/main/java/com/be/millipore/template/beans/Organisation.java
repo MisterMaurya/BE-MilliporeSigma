@@ -5,21 +5,25 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
-public class TemplateOrganisation {
+public class Organisation {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 
-	private Long templateOrganisationId;
+	private Long id;
+
+	@ApiModelProperty(hidden = true)
 	private String name;
 
-	public Long getTemplateOrganisationId() {
-		return templateOrganisationId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setTemplateOrganisationId(Long templateOrganisationId) {
-		this.templateOrganisationId = templateOrganisationId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {

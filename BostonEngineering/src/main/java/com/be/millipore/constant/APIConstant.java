@@ -121,5 +121,6 @@ public class APIConstant {
 
 	public static final String PROVIDE_VALID_DYNAMIC_DATA = "provide valid dynamic data";
 	public static final String TEMPLATE_TASK_USER_CREATED = "template task user created";
+	public static final String NOT_FOUND_DEPT_OR_ORG = "Not able to find Department/Organisation";
 
 }

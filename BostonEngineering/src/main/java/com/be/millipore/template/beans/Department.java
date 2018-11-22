@@ -5,20 +5,23 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
-public class TemplateDepartment {
+public class Department {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-	private Long templateDepartmentId;
+	@ApiModelProperty(hidden = true)
 	private String name;
 
-	public Long getTemplateDepartmentId() {
-		return templateDepartmentId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setTemplateDepartmentId(Long templateDepartmentId) {
-		this.templateDepartmentId = templateDepartmentId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {
