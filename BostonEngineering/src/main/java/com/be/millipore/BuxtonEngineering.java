@@ -9,14 +9,5 @@ public class BuxtonEngineering {
 	public static void main(String[] args) {
 
 		SpringApplication.run(BuxtonEngineering.class, args);
-		String aString = "Thispddn   . ";
-		String a[] = aString.split("[.]");
-		for (String i : a) {
-
-			System.out.println(i + 1);
-
-		}
-
 	}
-
 }

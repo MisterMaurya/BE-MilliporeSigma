@@ -28,8 +28,13 @@ public class ContentServiceImpl implements ContentService {
 				if (array.length > 1 && array.length > 3) {
 					return null;
 				} else if (array.length == 2) {
-					// logic
+					/*
+					 * array[0]; array[1];
+					 */
 				} else {
+					/*
+					 * array[0]; array[1]; array[1];
+					 */
 
 					// logic
 
