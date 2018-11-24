@@ -19,12 +19,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.be.millipore.beans.Department;
 import com.be.millipore.beans.User;
 import com.be.millipore.beans.UserRole;
 import com.be.millipore.constant.APIConstant;
 import com.be.millipore.constant.DBConstant;
-import com.be.millipore.dto.UserDto;
+import com.be.millipore.dto.ResetPasswordDto;
 import com.be.millipore.enums.IsActive;
 import com.be.millipore.enums.IsExpired;
 import com.be.millipore.repository.UserRepo;
@@ -245,20 +244,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 		User user = userRepo.findById(id).get();
 
-		jsonObject.put("id", user.getId());
-		jsonObject.put("userName", user.getUsername());
-		jsonObject.put("email", user.getEmail());
-		jsonObject.put("fullName", user.getFullName());
-		jsonObject.put("department", user.getDepartment());
-		jsonObject.put("countryCode", user.getCountryCode());
-		jsonObject.put("mobile", user.getMobile());
-		jsonObject.put("lineManageId", user.getLineManagerId());
-		jsonObject.put("status", user.getIsActive());
-		jsonObject.put("password", user.getPassword());
-		Department department = departmentService.findById(user.getDepartment().getId());
-		jsonObject.put("Department Name", department.getName());
-		jsonObject.put("Organistion Name",
-				organisationService.findById(department.getOrganisation().getId()).getName());
+		jsonObject.put(DBConstant.USERNAME, user.getUsername());
+		jsonObject.put(DBConstant.EMAIL, user.getEmail());
+		jsonObject.put(DBConstant.FULL_NAME, user.getFullName());
+		jsonObject.put(DBConstant.DEPARTMENT_NAME, departmentService.findById(user.getDepartment().getId()).getName());
+		jsonObject.put(DBConstant.COUNTRY_CODE, user.getCountryCode());
+		jsonObject.put(DBConstant.MOBILE, user.getMobile());
+		jsonObject.put(DBConstant.LINE_MANAGER_ID, user.getLineManagerId());
+		jsonObject.put(DBConstant.IS_ACTIVE, user.getIsActive());
+		jsonObject.put(DBConstant.ORGANISATION_NAME,
+				departmentService.findById(user.getDepartment().getId()).getOrganisation().getName());
 		for (UserRole userRole : user.getRole()) {
 			temp = new JSONObject();
 			temp.put("userRoleId", userRole.getId());
@@ -304,12 +299,64 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		return generate;
 	}
 
-// ******* matchOTPAndPassword(UserDto userDto) will check Email's OTP and user entered OTP are match or not  and also will check password and confirm password are equals or  not
-
-	private ResponseEntity<?> matchOTPAndPassword(UserDto userDto) throws JSONException {
+	@Override
+	public ResponseEntity<?> verfityUser(ResetPasswordDto resetPasswordDto) throws JSONException {
 		User existingUser = null;
 		JSONObject jsonObject = new JSONObject();
-		existingUser = userRepo.findByEmail(userDto.getEmail());
+		existingUser = userRepo.findByEmail(resetPasswordDto.getEmail());
+
+		// if user already verified
+		if (existingUser.getIsActive().equals(IsActive.Y)) {
+			jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.USERID_ALREADY_VERIFIED);
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
+		}
+
+		ResponseEntity<?> responseEntity = matchOTPAndPassword(resetPasswordDto);
+		if (!responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+			return responseEntity;
+		}
+		existingUser.setPassword(bcryptEncoder.encode(resetPasswordDto.getPassword())); // update password
+		existingUser.setIsActive(IsActive.Y); // update status
+		existingUser.setOtp("");
+		userRepo.save(existingUser);
+		jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.VERIFY_SUCCESSFULLY);
+		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
+
+	}
+
+	@Override
+	public ResponseEntity<?> forgotPassword(ResetPasswordDto resetPasswordDto) throws JSONException {
+		User existingUser = null;
+		ResponseEntity<?> responseEntity = null;
+		JSONObject jsonObject = new JSONObject();
+		existingUser = userRepo.findByEmail(resetPasswordDto.getEmail());
+		responseEntity = matchOTPAndPassword(resetPasswordDto);
+		if (!responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+			return responseEntity;
+		}
+		responseEntity = isPasswordAlreadyUse(resetPasswordDto.getPassword(), existingUser);
+		if (!responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+			return responseEntity;
+		}
+
+		existingUser.setLastPassword(existingUser.getPassword());
+		existingUser.setPassword(bcryptEncoder.encode(resetPasswordDto.getPassword()));
+		existingUser.setOtp("XXXXX");
+		userRepo.save(existingUser);
+		jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.PASSWORD_SUCESSFULLY_RESET);
+		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
+
+	}
+
+	// ******* matchOTPAndPassword(ResetPasswordDto resetPasswordDto) will check
+	// Email's OTP and user
+	// entered OTP are match or not and also will check password and confirm
+	// password are equals or not
+
+	private ResponseEntity<?> matchOTPAndPassword(ResetPasswordDto resetPasswordDto) throws JSONException {
+		User existingUser = null;
+		JSONObject jsonObject = new JSONObject();
+		existingUser = userRepo.findByEmail(resetPasswordDto.getEmail());
 
 		// if email not exists
 
@@ -320,13 +367,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 		// if password and and confirm password dose'nt match
 
-		if (!userDto.getPassword().equals(userDto.getConfirmPassword())) {
+		if (!resetPasswordDto.getPassword().equals(resetPasswordDto.getConfirmPassword())) {
 			jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.PASSWORD_NOT_MATCH);
 			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
 		}
 
 		// if OTP dose'nt match with email received OTP
-		if (!bcryptEncoder.matches(userDto.getOtp(), existingUser.getOtp())) {
+		if (!bcryptEncoder.matches(resetPasswordDto.getOtp(), existingUser.getOtp())) {
 			jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.OTP_NOT_VALID);
 			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
 		}
@@ -334,32 +381,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@Override
-	public ResponseEntity<?> verfityUser(UserDto userDto) throws JSONException {
-		User existingUser = null;
-		JSONObject jsonObject = new JSONObject();
-		existingUser = userRepo.findByEmail(userDto.getEmail());
-
-		// if user already verified
-		if (existingUser.getIsActive().equals(IsActive.Y)) {
-			jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.USERID_ALREADY_VERIFIED);
-			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
-		}
-
-		ResponseEntity<?> responseEntity = matchOTPAndPassword(userDto);
-		if (!responseEntity.getStatusCode().equals(HttpStatus.OK)) {
-			return responseEntity;
-		}
-		existingUser.setPassword(bcryptEncoder.encode(userDto.getPassword())); // update password
-		existingUser.setIsActive(IsActive.Y); // update status
-		existingUser.setOtp("");
-		userRepo.save(existingUser);
-		jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.VERIFY_SUCCESSFULLY);
-		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
-
-	}
-
-// ******* isPasswordAlreadyUse(arg1 , arg2) will check password already used or not
+	// ******* isPasswordAlreadyUse(arg1 , arg2) will check password already used or
+	// not
 
 	private ResponseEntity<?> isPasswordAlreadyUse(String password, User user) throws JSONException {
 
@@ -376,30 +399,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
-
-	}
-
-	@Override
-	public ResponseEntity<?> forgotPassword(UserDto userDto) throws JSONException {
-		User existingUser = null;
-		ResponseEntity<?> responseEntity = null;
-		JSONObject jsonObject = new JSONObject();
-		existingUser = userRepo.findByEmail(userDto.getEmail());
-		responseEntity = matchOTPAndPassword(userDto);
-		if (!responseEntity.getStatusCode().equals(HttpStatus.OK)) {
-			return responseEntity;
-		}
-		responseEntity = isPasswordAlreadyUse(userDto.getPassword(), existingUser);
-		if (!responseEntity.getStatusCode().equals(HttpStatus.OK)) {
-			return responseEntity;
-		}
-
-		existingUser.setLastPassword(existingUser.getPassword());
-		existingUser.setPassword(bcryptEncoder.encode(userDto.getPassword()));
-		existingUser.setOtp("XXXX");
-		userRepo.save(existingUser);
-		jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.PASSWORD_SUCESSFULLY_RESET);
-		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
 
 	}
 
@@ -439,10 +438,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		}
 		String otp = generateOTP();
 		existingUser.setOtp(otp);
-		existingUser.setIsExpired(IsExpired.Y);
+		existingUser.setIsExpired(IsExpired.N);
 
 		Response response = emailService.sendOtpTemplate(APIConstant.ORGANISATION_EMAIL, existingUser.getEmail(),
 				APIConstant.SUBJECT, APIConstant.FORGOT_TEMPLATE_ID, otp);
+		existingUser.setOtp(bcryptEncoder.encode(otp));
+
 		userRepo.save(existingUser);
 		System.out.println(response.getStatusCode());
 		jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.OTP_SEND);
@@ -456,12 +457,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		existingUser = userRepo.findByEmail(email);
 
 		if (existingUser == null) {
-			jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.USER_NOT_EXISTS);
+			jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.EMAIL_NOT_EXISTS);
 			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
 		}
 
-		if (existingUser.getIsExpired().equals(IsExpired.Y)) {
-			existingUser.setIsExpired(IsExpired.N);
+		if (existingUser.getIsExpired().equals(IsExpired.N)) {
+			existingUser.setIsExpired(IsExpired.Y);
 			userRepo.save(existingUser);
 			jsonObject.put(APIConstant.STATUS_RESPONSE, APIConstant.LINK_NOT_EXPIRED);
 			return new ResponseEntity<>(HttpStatus.OK);

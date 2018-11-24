@@ -1,6 +1,6 @@
 package com.be.millipore.dto;
 
-public class UserDto {
+public class ResetPasswordDto {
 
 	private String email;
 	private String otp;

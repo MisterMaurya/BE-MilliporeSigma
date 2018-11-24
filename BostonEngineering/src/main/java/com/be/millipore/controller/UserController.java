@@ -14,20 +14,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.be.millipore.beans.APIAccessControl;
 import com.be.millipore.beans.User;
 import com.be.millipore.beans.UserRole;
 import com.be.millipore.constant.APIConstant;
-import com.be.millipore.dto.UserDto;
+import com.be.millipore.dto.ResetPasswordDto;
 import com.be.millipore.service.APIAccessControlService;
 import com.be.millipore.service.UserService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -223,7 +221,7 @@ public class UserController {
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
 			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
 	@RequestMapping(value = APIConstant.VERIFY, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> verifiedUser(@RequestBody UserDto userDto) throws JSONException {
+	public ResponseEntity<?> verifiedUser(@RequestBody ResetPasswordDto userDto) throws JSONException {
 		return userService.verfityUser(userDto);
 	}
 
@@ -234,7 +232,7 @@ public class UserController {
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
 			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
 	@RequestMapping(value = APIConstant.RESET, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> sendOtpForForgotPassword(String email) throws JSONException {
+	public ResponseEntity<?> sendOtpForForgotPassword(@RequestBody String email) throws JSONException {
 		return userService.sendOtpForForgotPassword(email);
 	}
 
@@ -245,7 +243,7 @@ public class UserController {
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
 			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
 	@RequestMapping(value = APIConstant.FORGOT, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> forgotPassword(@RequestBody UserDto userDto) throws JSONException {
+	public ResponseEntity<?> forgotPassword(@RequestBody ResetPasswordDto userDto) throws JSONException {
 		return userService.forgotPassword(userDto);
 	}
 
@@ -264,8 +262,7 @@ public class UserController {
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
 			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
 	@RequestMapping(value = APIConstant.UPDATE_PASSWORD, method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> updatePassword(@PathVariable("id") Long id,
-			@ApiParam(name = "password") @RequestParam("password") String password) throws JSONException {
+	public ResponseEntity<?> updatePassword(@PathVariable Long id, @RequestBody String password) throws JSONException {
 		return userService.updatePassword(id, password);
 	}
 
@@ -275,8 +272,8 @@ public class UserController {
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
 			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
-	@RequestMapping(value = APIConstant.RESET, method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = "application/json")
-	public ResponseEntity<?> reset(@ApiParam(name = "email") @RequestParam("email") String email) throws JSONException {
+	@RequestMapping(value = APIConstant.RESET, method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	public ResponseEntity<?> reset(@RequestBody String email) throws JSONException {
 		return userService.isOTPResetLinkExpired(email);
 	}
 

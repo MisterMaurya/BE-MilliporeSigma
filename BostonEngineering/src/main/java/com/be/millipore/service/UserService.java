@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 
 import com.be.millipore.beans.User;
-import com.be.millipore.dto.UserDto;
+import com.be.millipore.dto.ResetPasswordDto;
 
 public interface UserService {
 
@@ -35,9 +35,9 @@ public interface UserService {
 
 	JSONObject getOneUser(Long id) throws JSONException; // get One user with additional details
 
-	public ResponseEntity<?> verfityUser(UserDto userDto) throws JSONException; // verify user
+	public ResponseEntity<?> verfityUser(ResetPasswordDto userDto) throws JSONException; // verify user
 
-	public ResponseEntity<?> forgotPassword(UserDto userDto) throws JSONException; // forgot password
+	public ResponseEntity<?> forgotPassword(ResetPasswordDto userDto) throws JSONException; // forgot password
 
 	public ResponseEntity<?> updatePassword(Long id, String password) throws JSONException; // update password
 
