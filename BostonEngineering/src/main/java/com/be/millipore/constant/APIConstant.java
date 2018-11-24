@@ -8,7 +8,7 @@ public class APIConstant {
 	public static final String USER_SUCCESSFULLY_CREATED = "User successfully created";
 	public static final String USER_NOT_EXISTS = "Please enter valid user id. User id is not exists";
 	public static final String USERID_ALREADY_EXISTS = "UserId Already exists";
-	public static final String RESPONSE_ERROR_MESSAGE = "Error message";
+	public static final String ERROR_MESSAGE = "Error message";
 	public static final String USER_SUCCESSFULLY_UPDATED = "User successfully updated";
 	public static final String USER_CREATE_STATUS = "create";
 	public static final String USER_UPDATE_STATUS = "update";
@@ -28,6 +28,7 @@ public class APIConstant {
 	public static final String TEMPLATE_NOT_SAVED = "Template not save! Something went wrong";
 	public static final String TEMPLATE_SUCCESSFULLY_CREATED = "Template successfully created";
 	public static final String TEMPLATE_CONTENT = "content";
+	public static final String DEPARTMENT_NOT_EXISTS = "Please enter valid department id. Department id is not exists";
 
 //*** REST BASE URL***//
 

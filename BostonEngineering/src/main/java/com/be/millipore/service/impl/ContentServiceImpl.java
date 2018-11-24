@@ -1,12 +1,12 @@
-package com.be.millipore.template.service.impl;
+package com.be.millipore.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.be.millipore.template.beans.Content;
-import com.be.millipore.template.repo.ContentRepo;
-import com.be.millipore.template.repo.TUserRepo;
-import com.be.millipore.template.service.ContentService;
+import com.be.millipore.beans.Content;
+import com.be.millipore.repository.ContentRepo;
+import com.be.millipore.repository.UserRepo;
+import com.be.millipore.service.ContentService;
 
 @Service
 public class ContentServiceImpl implements ContentService {
@@ -15,7 +15,7 @@ public class ContentServiceImpl implements ContentService {
 	private ContentRepo templateRepo;
 
 	@Autowired
-	private TUserRepo userRepo;
+	private UserRepo userRepo;
 
 	@Override
 	public Content save(Content content) {

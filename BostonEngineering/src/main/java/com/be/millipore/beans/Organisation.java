@@ -1,23 +1,24 @@
-package com.be.millipore.template.beans;
+package com.be.millipore.beans;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
-import io.swagger.annotations.ApiModelProperty;
+import com.be.millipore.constant.DBConstant;
 
 @Entity
+@Table(name = DBConstant.ORGANISATION_MASTER)
 public class Organisation {
+
+	private Long id;
+	private String name;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-
-	private Long id;
-
-	@ApiModelProperty(hidden = true)
-	private String name;
-
+	@Column(name = DBConstant.ORGANISATION_ID, unique = true, nullable = false)
 	public Long getId() {
 		return id;
 	}
@@ -26,6 +27,7 @@ public class Organisation {
 		this.id = id;
 	}
 
+	@Column(name = DBConstant.ORGANISATION_NAME, unique = true, nullable = false)
 	public String getName() {
 		return name;
 	}

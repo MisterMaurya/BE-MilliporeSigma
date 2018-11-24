@@ -2,6 +2,8 @@ package com.be.millipore.controller;
 
 import java.security.Principal;
 
+import javax.validation.Valid;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +34,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+/**
+ * @author Pawan-pc
+ *
+ */
+
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping(value = APIConstant.REST_BASE_URL + APIConstant.REST_USER_URL)
@@ -43,16 +51,28 @@ public class UserController {
 	@Autowired
 	private APIAccessControlService accessControlService;
 
-// (1). ****** CREATE A NEW USER ****//
+	/**************************************************************************
+	 * (1). CREATE A NEW USER
+	 **************************************************************************/
+
+	/**
+	 * @param user
+	 * @return Response code 200 if user successfully created
+	 * @throws JSONException
+	 */
 
 	@ApiOperation(value = APIConstant.USER_CREATE, notes = APIConstant.USER_CREATE_NOTE)
-	@PreAuthorize("hasRole('ADMIN')")
+	// @PreAuthorize("hasRole('ADMIN')")
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
 			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
 	@RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> createUser(@RequestBody User user) throws JSONException {
+	public ResponseEntity<?> createUser(@Valid @RequestBody User user, BindingResult result) throws JSONException {
 		JSONObject jsonObject = new JSONObject();
+		if (result.hasErrors()) {
+			jsonObject.put(APIConstant.ERROR_MESSAGE, result.getFieldError());
+		}
+
 		ResponseEntity<?> responseEntity = userService.validateUser(user);
 		if (responseEntity != null) {
 			return responseEntity;
@@ -65,7 +85,7 @@ public class UserController {
 
 	}
 
-// (2). ****** UPDATE A USER ****//	
+	// (2). ****** UPDATE A USER ****//
 
 	@ApiOperation(value = APIConstant.USER_UPDATE)
 	@PreAuthorize("hasRole('ADMIN')")
@@ -86,7 +106,7 @@ public class UserController {
 				HttpStatus.OK);
 	}
 
-// (3). ****** GET ONE USER ****//
+	// (3). ****** GET ONE USER ****//
 
 	@ApiOperation(value = APIConstant.GET_ONE_USER)
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
@@ -100,14 +120,14 @@ public class UserController {
 		existingUser = userService.findById(id);
 		if (existingUser == null) {
 
-			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.USER_NOT_EXISTS);
+			jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.USER_NOT_EXISTS);
 			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
 		}
 
 		jsonObject = userService.getOneUser(id);
 		for (UserRole userRole : existingUser.getRole()) {
-			if (userRole.getUserRole().equals("Operator")) {
-				User getManagerDetails = userService.findById(existingUser.getLineManageId());
+			if (userRole.getRole().equals("Operator")) {
+				User getManagerDetails = userService.findById(existingUser.getLineManagerId());
 				jsonObject.put("Manager Name", getManagerDetails.getFullName());
 				jsonObject.put("Manager Email", getManagerDetails.getEmail());
 				jsonObject.put("Manager Mobile", getManagerDetails.getMobile());
@@ -118,7 +138,7 @@ public class UserController {
 		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
 	}
 
-// (4). ****** GET LIST OF ALL USER  ****//
+	// (4). ****** GET LIST OF ALL USER ****//
 
 	@ApiOperation(value = APIConstant.GET_ALL_USER)
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
@@ -129,7 +149,7 @@ public class UserController {
 		APIAccessControl accessControl = accessControlService.findByApiName(DBConstant.GET_ALL_USER_RESOURCE);
 		ResponseEntity<?> responseEntity = accessControlService.accessControl(accessControl, principal);
 		if (responseEntity.getStatusCode() != HttpStatus.OK) {
-			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.FORBIDDEN);
+			jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.FORBIDDEN);
 			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.UNAUTHORIZED);
 		}
 		return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
@@ -150,7 +170,7 @@ public class UserController {
 		user = userService.findById(id);
 		if (user == null) {
 			return new ResponseEntity<>(
-					jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.USER_NOT_EXISTS).toString(),
+					jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.USER_NOT_EXISTS).toString(),
 					HttpStatus.BAD_REQUEST);
 		}
 

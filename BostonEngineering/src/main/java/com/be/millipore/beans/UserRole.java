@@ -1,32 +1,42 @@
 package com.be.millipore.beans;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
-@Entity(name = "user_role_master")
+import com.be.millipore.constant.DBConstant;
+
+import io.swagger.annotations.ApiModelProperty;
+
+@Entity
+@Table(name = DBConstant.USER_ROLE_MASTER)
 public class UserRole {
 
-	private Long userRoleId;
-	private String userRole;
+	private Long id;
+	private String role;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long getUserRoleId() {
-		return userRoleId;
+	@Column(name = DBConstant.ROLE_ID, unique = true, nullable = false)
+	public Long getId() {
+		return id;
 	}
 
-	public void setUserRoleId(Long userRoleId) {
-		this.userRoleId = userRoleId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public String getUserRole() {
-		return userRole;
+	@Column(name = DBConstant.ROLE, unique = true, nullable = false)
+	@ApiModelProperty(hidden = true)
+	public String getRole() {
+		return role;
 	}
 
-	public void setUserRole(String userRole) {
-		this.userRole = userRole;
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 }

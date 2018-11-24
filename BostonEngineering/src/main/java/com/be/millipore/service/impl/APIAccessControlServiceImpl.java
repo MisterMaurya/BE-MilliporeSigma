@@ -45,10 +45,10 @@ public class APIAccessControlServiceImpl implements APIAccessControlService {
 
 		roleslist.add(accessControl.getOperatorAccess());
 
-		User existingUser = userService.findByUserName(principal.getName());
+		User existingUser = userService.findByUsername(principal.getName());
 		for (UserRole role : existingUser.getRole()) {
 			for (String dbRole : roleslist) {
-				if (role.getUserRole().equalsIgnoreCase(dbRole)) {
+				if (role.getRole().equalsIgnoreCase(dbRole)) {
 					return new ResponseEntity<>(HttpStatus.OK);
 				}
 			}
@@ -63,7 +63,7 @@ public class APIAccessControlServiceImpl implements APIAccessControlService {
 		boolean isAPIExists = false;
 		isAPIExists = accessControlRepo.findById(id).isPresent();
 		if (!isAPIExists) {
-			jsonObject.put(APIConstant.RESPONSE_ERROR_MESSAGE, APIConstant.ACCESS_CONTROL_ID_NOT_EXISIS);
+			jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.ACCESS_CONTROL_ID_NOT_EXISIS);
 			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
 		}
 

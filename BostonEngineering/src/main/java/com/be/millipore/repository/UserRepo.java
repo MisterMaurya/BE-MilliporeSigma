@@ -12,8 +12,8 @@ public interface UserRepo extends CrudRepository<User, Long> {
 
 	public User findByMobile(String mobile);
 
-	public User findByUserName(String userName);
+	public User findByUsername(String userName);
 
-	public User findBylineManageId(Long lineManagerId);
+	public User findByLineManagerId(Long lineManagerId);
 
 }

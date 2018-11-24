@@ -5,6 +5,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,39 +14,42 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.Size;
+
+import com.be.millipore.constant.DBConstant;
+import com.be.millipore.enums.IsActive;
+import com.be.millipore.enums.IsExpired;
 
 import io.swagger.annotations.ApiModelProperty;
 
-@Entity(name = "user_master")
+@Entity
+@Table(name = DBConstant.USER_MASTER)
 public class User {
 
-	@ApiModelProperty(hidden = true)
 	private Long id;
-	private String userName;
+	private Long lineManagerId;
+	private String username;
 	private String email;
 	private String fullName;
-	private String title;
-	private String department;
 	private String countryCode;
 	private String mobile;
-	private Long lineManageId;
 	private String password;
-	private String status;
-	private String otp;
-
-	@ApiModelProperty(hidden = true)
 	private String lastPassword;
-	@ApiModelProperty(hidden = true)
-	private boolean linkExpired;
-
+	private String otp;
+	private IsActive IsActive;
+	private IsExpired IsExpired;
 	private Set<UserRole> role = new HashSet<UserRole>(0);
+	private Department department;
 
 	public User() {
-
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@ApiModelProperty(hidden = true)
+	@Column(name = DBConstant.USER_ID, unique = true, nullable = false)
 	public Long getId() {
 		return id;
 	}
@@ -53,23 +58,35 @@ public class User {
 		this.id = id;
 	}
 
-	public String getUserName() {
-		return userName;
+	@Column(name = DBConstant.LINE_MANAGER_ID)
+	public Long getLineManagerId() {
+		return lineManagerId;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setLineManagerId(Long lineManagerId) {
+		this.lineManagerId = lineManagerId;
 	}
 
-	@Column(unique = true)
+	@Column(name = DBConstant.USERNAME)
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	@Column(name = DBConstant.EMAIL, unique = true, nullable = false)
 	public String getEmail() {
 		return email;
 	}
 
+	@Size(max = 2, message = "email is n")
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
+	@Column(name = DBConstant.FULL_NAME, nullable = false)
 	public String getFullName() {
 		return fullName;
 	}
@@ -78,31 +95,7 @@ public class User {
 		this.fullName = fullName;
 	}
 
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getDepartment() {
-		return department;
-	}
-
-	public void setDepartment(String department) {
-		this.department = department;
-	}
-
-	@Column(unique = true)
-	public String getMobile() {
-		return mobile;
-	}
-
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
-
+	@Column(name = DBConstant.COUNTRY_CODE, nullable = false)
 	public String getCountryCode() {
 		return countryCode;
 	}
@@ -111,25 +104,16 @@ public class User {
 		this.countryCode = countryCode;
 	}
 
-	public Long getLineManageId() {
-		return lineManageId;
+	@Column(name = DBConstant.MOBILE, unique = true, nullable = false)
+	public String getMobile() {
+		return mobile;
 	}
 
-	public void setLineManageId(Long lineManageId) {
-		this.lineManageId = lineManageId;
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
 	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "user_role_map", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = {
-			@JoinColumn(name = "userRoleId") })
-	public Set<UserRole> getRole() {
-		return role;
-	}
-
-	public void setRole(Set<UserRole> role) {
-		this.role = role;
-	}
-
+	@Column(name = DBConstant.PASSWORD, nullable = false)
 	public String getPassword() {
 		return password;
 	}
@@ -138,22 +122,7 @@ public class User {
 		this.password = password;
 	}
 
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public String getOtp() {
-		return otp;
-	}
-
-	public void setOtp(String otp) {
-		this.otp = otp;
-	}
-
+	@Column(name = DBConstant.LAST_PASSWORD, nullable = false)
 	public String getLastPassword() {
 		return lastPassword;
 	}
@@ -162,12 +131,57 @@ public class User {
 		this.lastPassword = lastPassword;
 	}
 
-	public boolean isLinkExpired() {
-		return linkExpired;
+	@Column(name = DBConstant.OTP, nullable = false)
+	@ApiModelProperty(hidden = true)
+	public String getOtp() {
+		return otp;
 	}
 
-	public void setLinkExpired(boolean linkExpired) {
-		this.linkExpired = linkExpired;
+	public void setOtp(String otp) {
+		this.otp = otp;
+	}
+
+	@Column(name = DBConstant.IS_ACTIVE, nullable = false)
+	@Enumerated(EnumType.STRING)
+	@ApiModelProperty(hidden = true)
+	public IsActive getIsActive() {
+		return IsActive;
+	}
+
+	public void setIsActive(IsActive isActive) {
+		IsActive = isActive;
+	}
+
+	@Column(name = DBConstant.IS_EXPIRED, nullable = false)
+	@Enumerated(EnumType.STRING)
+	@ApiModelProperty(hidden = true)
+	public IsExpired getIsExpired() {
+		return IsExpired;
+	}
+
+	public void setIsExpired(IsExpired isExpired) {
+		IsExpired = isExpired;
+	}
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = DBConstant.USER_ROLE_MAP, joinColumns = {
+			@JoinColumn(name = DBConstant.USER_ID) }, inverseJoinColumns = { @JoinColumn(name = DBConstant.ROLE_ID) })
+	public Set<UserRole> getRole() {
+		return role;
+	}
+
+	public void setRole(Set<UserRole> role) {
+		this.role = role;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = DBConstant.DEPARTMENT_ID)
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
 	}
 
 }

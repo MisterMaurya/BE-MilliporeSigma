@@ -17,13 +17,13 @@ public interface UserService {
 
 	public User findById(Long id);
 
-	public void updateUser(Long id);
-
 	public User findByEmail(String email);
 
 	public User findByMobile(String mobile);
 
-	public User findByUserName(String userName);
+	public User findByUsername(String username);
+
+	public void updateUser(Long id);
 
 	public User getLineManager(Long lineManagerId); // Return All Manager
 

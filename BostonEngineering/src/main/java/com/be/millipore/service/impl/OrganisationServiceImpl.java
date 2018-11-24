@@ -1,11 +1,11 @@
-package com.be.millipore.template.service.impl;
+package com.be.millipore.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.be.millipore.template.beans.Organisation;
-import com.be.millipore.template.repo.OrganisationRepo;
-import com.be.millipore.template.service.OrganisationService;
+import com.be.millipore.beans.Organisation;
+import com.be.millipore.repository.OrganisationRepo;
+import com.be.millipore.service.OrganisationService;
 
 @Service
 public class OrganisationServiceImpl implements OrganisationService {
@@ -18,6 +18,12 @@ public class OrganisationServiceImpl implements OrganisationService {
 		Organisation existingOrganisation = null;
 		existingOrganisation = organisationRepo.findById(id).get();
 		return existingOrganisation;
+	}
+
+	@Override
+	public Organisation save(Organisation organisation) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

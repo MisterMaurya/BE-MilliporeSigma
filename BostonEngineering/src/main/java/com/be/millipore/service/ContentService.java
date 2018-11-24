@@ -1,6 +1,6 @@
-package com.be.millipore.template.service;
+package com.be.millipore.service;
 
-import com.be.millipore.template.beans.Content;
+import com.be.millipore.beans.Content;
 
 public interface ContentService {
 

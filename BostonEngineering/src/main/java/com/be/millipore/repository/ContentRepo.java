@@ -3,9 +3,9 @@ package com.be.millipore.repository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.be.millipore.beans.Template;
+import com.be.millipore.beans.Content;
 
 @Repository
-public interface TemplateRepo extends CrudRepository<Template, Long> {
+public interface ContentRepo extends CrudRepository<Content, Long> {
 
 }

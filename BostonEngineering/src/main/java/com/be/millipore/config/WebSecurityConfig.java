@@ -76,7 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						"/**/*.css", "/**/*.js")
 				.permitAll()
 				.antMatchers("/boston/user/email/**", "/login/**", "/boston/", "/bootstrap/**", "/jquery/**", "/css/**",
-						" /js/**", "/images/**")
+						" /js/**", "/images/**", "/boston/user", "/boston/user/**")
 				.permitAll().antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated().and()
 				.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
 
