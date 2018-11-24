@@ -28,10 +28,10 @@ import com.be.millipore.dto.UserDto;
 import com.be.millipore.enums.IsActive;
 import com.be.millipore.enums.IsExpired;
 import com.be.millipore.repository.UserRepo;
-import com.be.millipore.repository.UserRoleRepo;
 import com.be.millipore.service.DepartmentService;
 import com.be.millipore.service.EmailService;
 import com.be.millipore.service.OrganisationService;
+import com.be.millipore.service.UserRoleService;
 import com.be.millipore.service.UserService;
 import com.sendgrid.Response;
 
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	private UserRepo userRepo;
 
 	@Autowired
-	private UserRoleRepo userRoleRepo;
+	private UserRoleService userRoleService;
 
 	@Autowired
 	private BCryptPasswordEncoder bcryptEncoder;
@@ -60,16 +60,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public User save(User user) {
 		User newUser = null;
 		String otp = generateOTP();
-		user.setOtp(bcryptEncoder.encode(user.getOtp()));
+		user.setOtp(bcryptEncoder.encode(otp));
 		user.setPassword(bcryptEncoder.encode(user.getPassword()));
 		user.setIsExpired(IsExpired.NOT_GENERATE);
 		user.setLastPassword(DBConstant.LAST_PASSWORD_PENDING);
-		try {
-			newUser = userRepo.save(user);
-		} catch (Exception e) {
-			System.out.println("Exception : " + e);
-			return newUser;
-		}
 		newUser = userRepo.save(user);
 		Response response = emailService.sendOtpTemplate(APIConstant.ORGANISATION_EMAIL, user.getEmail(),
 				APIConstant.SUBJECT, APIConstant.VERIFY_TEMPLATE_ID, otp);
@@ -131,7 +125,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			user = findById(lineManagerId);
 			if (user.getIsActive().equals(IsActive.Y)) {
 				for (UserRole i : user.getRole()) {
-					if (i.getRole().equals("Manager")) {
+					if (i.getRole().equalsIgnoreCase(DBConstant.ROLE_MANAGER)) {
 						return user;
 					} else {
 						return null;
@@ -185,7 +179,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		existingUser = findByUsername(user.getUsername());
 		if (existingUser != null && existingUser.getId() != user.getId()) {
 			return new ResponseEntity<>(
-					jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.USERID_ALREADY_EXISTS).toString(),
+					jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.USERNAME_ALREADY_EXISTS).toString(),
 					HttpStatus.BAD_REQUEST);
 
 		}
@@ -198,8 +192,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		}
 
 		for (UserRole role : user.getRole()) {
-			if (userRoleRepo.findById(role.getId()).isPresent()) {
-				if (role.getRole().equals("Operator")) {
+			if (userRoleService.existsById(role.getId())) {
+
+				if (DBConstant.ROLE_OPERATOR.equalsIgnoreCase(role.getRole())) {
 					existingUser = getLineManager(user.getLineManagerId());
 					if (existingUser == null) {
 						return new ResponseEntity<>(jsonObject
@@ -226,17 +221,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		for (User user : userRepo.findAll()) {
 			if (user.getIsActive().equals(IsActive.Y)) {
 				for (UserRole userRole : user.getRole()) {
-					if (userRole.getRole().equals("MANAGER")) {
+					if (userRole.getRole().equalsIgnoreCase(DBConstant.ROLE_MANAGER)) {
 						activeManager.add(user);
 					}
 				}
 			}
 
 		}
-		for (User user : activeManager) {
-			System.out.println("aa " + user.getFullName());
-		}
-
 		return activeManager;
 	}
 
@@ -335,7 +326,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		}
 
 		// if OTP dose'nt match with email received OTP
-		if (!userDto.getOtp().equals(existingUser.getOtp())) {
+		if (!bcryptEncoder.matches(userDto.getOtp(), existingUser.getOtp())) {
 			jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.OTP_NOT_VALID);
 			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
 		}
@@ -479,11 +470,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.LINK_EXPIRED);
 		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
 
-	}
-
-	public String h() {
-
-		return findById((long) 1).getEmail();
 	}
 
 }

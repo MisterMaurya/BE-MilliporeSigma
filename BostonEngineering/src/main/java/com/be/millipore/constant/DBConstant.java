@@ -42,5 +42,8 @@ public class DBConstant {
 	public static final String CONTENT_ID = "content_id";
 	public static final String CONTENT = "content";
 	public static final String LAST_PASSWORD_PENDING = "pending";
+	public static final String ROLE_OPERATOR = "OPERATOR";
+	public static final String NOT_GENERATE = "not generate";
+	public static final String ROLE_MANAGER = "MANAGER";
 
 }

@@ -8,4 +8,8 @@ public interface UserRoleService {
 
 	public List<UserRole> findAllUserRole();
 
+	public boolean existsById(Long id);
+
+	public UserRole findById(Long id);
+
 }

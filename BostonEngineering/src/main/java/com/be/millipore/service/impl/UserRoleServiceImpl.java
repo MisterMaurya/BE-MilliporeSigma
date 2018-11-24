@@ -23,4 +23,19 @@ public class UserRoleServiceImpl implements UserRoleService {
 		return listOfUserRole;
 	}
 
+	@Override
+	public boolean existsById(Long id) {
+		return userRoleRepo.existsById(id);
+	}
+
+	@Override
+	public UserRole findById(Long id) {
+		boolean isExists = false;
+		isExists = userRoleRepo.findById(id).isPresent();
+		if (isExists == false) {
+			return null;
+		}
+		return userRoleRepo.findById(id).get();
+	}
+
 }

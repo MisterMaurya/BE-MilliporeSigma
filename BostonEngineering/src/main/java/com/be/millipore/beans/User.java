@@ -16,7 +16,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 
 import com.be.millipore.constant.DBConstant;
 import com.be.millipore.enums.IsActive;
@@ -38,7 +37,7 @@ public class User {
 	private String password;
 	private String lastPassword;
 	private String otp;
-	private IsActive IsActive;
+	private IsActive isActive = IsActive.N;
 	private IsExpired IsExpired;
 	private Set<UserRole> role = new HashSet<UserRole>(0);
 	private Department department;
@@ -81,7 +80,6 @@ public class User {
 		return email;
 	}
 
-	@Size(max = 2, message = "email is n")
 	public void setEmail(String email) {
 		this.email = email;
 	}
@@ -123,6 +121,7 @@ public class User {
 	}
 
 	@Column(name = DBConstant.LAST_PASSWORD, nullable = false)
+	@ApiModelProperty(hidden = true)
 	public String getLastPassword() {
 		return lastPassword;
 	}
@@ -143,13 +142,12 @@ public class User {
 
 	@Column(name = DBConstant.IS_ACTIVE, nullable = false)
 	@Enumerated(EnumType.STRING)
-	@ApiModelProperty(hidden = true)
 	public IsActive getIsActive() {
-		return IsActive;
+		return isActive;
 	}
 
 	public void setIsActive(IsActive isActive) {
-		IsActive = isActive;
+		this.isActive = isActive;
 	}
 
 	@Column(name = DBConstant.IS_EXPIRED, nullable = false)

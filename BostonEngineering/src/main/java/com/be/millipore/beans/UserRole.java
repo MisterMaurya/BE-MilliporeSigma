@@ -9,8 +9,6 @@ import javax.persistence.Table;
 
 import com.be.millipore.constant.DBConstant;
 
-import io.swagger.annotations.ApiModelProperty;
-
 @Entity
 @Table(name = DBConstant.USER_ROLE_MASTER)
 public class UserRole {
@@ -30,7 +28,7 @@ public class UserRole {
 	}
 
 	@Column(name = DBConstant.ROLE, unique = true, nullable = false)
-	@ApiModelProperty(hidden = true)
+	// @ApiModelProperty(hidden = true)
 	public String getRole() {
 		return role;
 	}
