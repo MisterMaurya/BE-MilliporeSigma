@@ -8,17 +8,15 @@ import javax.persistence.Id;
 
 import com.be.millipore.constant.DBConstant;
 
-import io.swagger.annotations.ApiModelProperty;
-
 @Entity
-public class Content {
+public class Template {
 
 	private Long id;
 	private String content;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@ApiModelProperty(hidden = true)
+	// @ApiModelProperty(hidden = true)
 	@Column(name = DBConstant.CONTENT_ID, unique = true, nullable = false)
 	public Long getId() {
 		return id;

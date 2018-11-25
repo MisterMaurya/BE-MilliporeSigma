@@ -105,6 +105,7 @@ public class APIConstant {
 	public static final String FORBIDDEN = "Accessing the resource you were trying to reach is forbidden";
 	public static final String NOT_FOUND = "The resource you were trying to reach is not found";
 	public static final String NOT_AUTHORIZED = "You are not authorized to view the resource";
+	public static final String INTERNAL_SERVER_ERROR = "Internal server error";
 
 //*** OTP RESPONSES MESSAGE   ***	
 

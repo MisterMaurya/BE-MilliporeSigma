@@ -1,28 +1,57 @@
 package com.be.millipore.service.impl;
 
+import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
-public class TemplateServiceImpl /* implements TemplateService */ {
+import com.be.millipore.beans.Template;
+import com.be.millipore.repository.TemplateRepo;
+import com.be.millipore.service.TemplateService;
 
-	/*
-	 * @Autowired private TemplateRepo templateRepo;
-	 * 
-	 * @Override public Template save(Template template) { Template existingTemplate
-	 * = null; existingTemplate = templateRepo.save(template); return
-	 * existingTemplate; }
-	 * 
-	 * @Override public Template findById(Long id) { Template existingTemplate =
-	 * null; existingTemplate = templateRepo.findById(id).get(); return
-	 * existingTemplate; }
-	 * 
-	 * @Override public List<String> getAllDynamicData(String content) {
-	 * ArrayList<String> dynamicData = new ArrayList<>(); String[] data =
-	 * content.split(" "); StringBuffer key = null; for (String getDynamicData :
-	 * data) { if (getDynamicData.startsWith("${") && getDynamicData.endsWith("}"))
-	 * { key = new StringBuffer(getDynamicData); key.delete(0, 2);
-	 * key.deleteCharAt(key.length() - 1); dynamicData.add(key.toString()); } }
-	 * 
-	 * return dynamicData; }
-	 */
+@Service
+public class TemplateServiceImpl implements TemplateService {
+
+	@Autowired
+	private TemplateRepo templateRepo;
+
+	@Override
+	public Template save(Template template) {
+		Template existingTemplate = null;
+		existingTemplate = templateRepo.save(template);
+		return existingTemplate;
+	}
+
+	@Override
+	public Template findById(Long id) {
+		Template existingTemplate = null;
+		existingTemplate = templateRepo.findById(id).get();
+		return existingTemplate;
+	}
+
+	@Override
+	public boolean existsById(Long id) {
+		return templateRepo.existsById(id);
+	}
+
+	@Override
+	public List<String> getAllDynamicFields(String content) {
+		ArrayList<String> dynamicFields = new ArrayList<>();
+		String data[] = content.split(" ");
+		for (String dynamicData : data) {
+			if (dynamicData.matches("^[${].*[}]$")) {
+				dynamicFields.add(dynamicData.substring(2, dynamicData.length() - 1));
+			}
+		}
+		return dynamicFields;
+	}
+
+	@Override
+	public Object getValue(Class<?> bean, String field, Object object) throws Exception {
+		return new PropertyDescriptor(field, bean).getReadMethod().invoke(object);
+
+	}
+
 }

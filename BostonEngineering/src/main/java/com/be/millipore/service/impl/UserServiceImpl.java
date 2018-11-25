@@ -156,7 +156,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		User existingUser = null;
 		JSONObject jsonObject = new JSONObject();
 		existingUser = findByEmail(user.getEmail());
-
+		System.out.println("Here" + user.getId());
 		if (existingUser != null && existingUser.getId() != user.getId()) {
 			return new ResponseEntity<String>(
 					jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.EMAIL_ALREADY_EXISTS).toString(),
@@ -472,6 +472,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Override
 	public boolean existsById(Long id) {
 		return userRepo.existsById(id);
+	}
+
+	@Override
+	public User findByEmailAndId(String email, Long id) {
+		User user = null;
+		user = userRepo.findByEmailAndId(email, id);
+		return user;
 	}
 
 }

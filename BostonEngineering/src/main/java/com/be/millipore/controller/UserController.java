@@ -59,7 +59,8 @@ public class UserController {
 	@PreAuthorize("hasRole('ADMIN')")
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
-			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
+			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND),
+			@ApiResponse(code = 500, message = APIConstant.INTERNAL_SERVER_ERROR) })
 	@RequestMapping(method = RequestMethod.POST, produces = APIConstant.REST_JSON_CONTENT_TYPE, consumes = APIConstant.REST_JSON_CONTENT_TYPE)
 	public ResponseEntity<?> createUser(@RequestBody User user) throws JSONException {
 		JSONObject jsonObject = new JSONObject();
@@ -80,14 +81,20 @@ public class UserController {
 	 * (2). UPDATE A USER
 	 **************************************************************************/
 
+	/**
+	 * @param id
+	 * @param user
+	 * @return Response code 200 if user successfully update
+	 * @throws JSONException
+	 */
 	@ApiOperation(value = APIConstant.USER_UPDATE)
 	@PreAuthorize("hasRole('ADMIN')")
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
-			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
-	@RequestMapping(value = APIConstant.REST_ID_PARAM, method = RequestMethod.PUT, produces = APIConstant.REST_JSON_CONTENT_TYPE)
+			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND),
+			@ApiResponse(code = 500, message = APIConstant.INTERNAL_SERVER_ERROR) })
+	@RequestMapping(value = APIConstant.REST_ID_PARAM, method = RequestMethod.PUT, produces = APIConstant.REST_JSON_CONTENT_TYPE, consumes = APIConstant.REST_JSON_CONTENT_TYPE)
 	public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) throws JSONException {
-
 		JSONObject jsonObject = new JSONObject();
 		ResponseEntity<?> responseEntity = userService.validateUser(user);
 		if (responseEntity != null) {
@@ -103,12 +110,20 @@ public class UserController {
 	 * (3). GET ONE USER
 	 **************************************************************************/
 
+	/**
+	 * @param id
+	 * @return Response code 200 if user successfully get
+	 * @throws JSONException
+	 */
+
 	@ApiOperation(value = APIConstant.GET_ONE_USER)
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
-			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
+			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND),
+			@ApiResponse(code = 500, message = APIConstant.INTERNAL_SERVER_ERROR) })
 	@PreAuthorize("hasRole('ADMIN')")
-	@RequestMapping(value = APIConstant.REST_ID_PARAM, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = APIConstant.REST_ID_PARAM, method = RequestMethod.GET, produces = {
+			APIConstant.REST_JSON_CONTENT_TYPE })
 	public ResponseEntity<?> getOneUser(@PathVariable Long id) throws JSONException {
 
 		JSONObject jsonObject = new JSONObject();
@@ -126,14 +141,15 @@ public class UserController {
 
 	/**
 	 * @param principal
-	 * @return
+	 * @return Response code 200 if All user successfully get
 	 * @throws JSONException
 	 */
 
 	@ApiOperation(value = APIConstant.GET_ALL_USER)
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
-			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN), })
-	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
+			@ApiResponse(code = 500, message = APIConstant.INTERNAL_SERVER_ERROR) })
+	@RequestMapping(method = RequestMethod.GET, produces = APIConstant.REST_JSON_CONTENT_TYPE, consumes = APIConstant.REST_JSON_CONTENT_TYPE)
 	public ResponseEntity<?> getAllUser(Principal principal) throws JSONException {
 		// JSONObject jsonObject = new JSONObject();
 		/*
@@ -201,7 +217,7 @@ public class UserController {
 	 **************************************************************************/
 
 	/**
-	 * @param userDto
+	 * @param resetPasswordDto
 	 * @return Response code 200 if User status successfully verified
 	 * @throws JSONException
 	 */
@@ -211,13 +227,19 @@ public class UserController {
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
 			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
 	@RequestMapping(value = APIConstant.VERIFY, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> verifiedUser(@RequestBody ResetPasswordDto userDto) throws JSONException {
-		return userService.verfityUser(userDto);
+	public ResponseEntity<?> verifiedUser(@RequestBody ResetPasswordDto resetPasswordDto) throws JSONException {
+		return userService.verfityUser(resetPasswordDto);
 	}
 
 	/**************************************************************************
 	 * (8). SEND OTP FOR FORGOT PASSWORD
 	 **************************************************************************/
+
+	/**
+	 * @param email
+	 * @return
+	 * @throws JSONException
+	 */
 
 	@ApiOperation(value = APIConstant.SEND_OTP_FOR_FORGOT_PASSWORD)
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
@@ -269,6 +291,11 @@ public class UserController {
 	 * (11). RESET LINK VALIDATE
 	 **************************************************************************/
 
+	/**
+	 * @param email
+	 * @return
+	 * @throws JSONException
+	 */
 	@ApiOperation(value = APIConstant.RESET_LINK_VALIDATE)
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
@@ -282,6 +309,12 @@ public class UserController {
 	 * (12). UPDATE ACCESS CONTROL
 	 **************************************************************************/
 
+	/**
+	 * @param id
+	 * @param accessControl
+	 * @return
+	 * @throws JSONException
+	 */
 	@ApiOperation(value = APIConstant.UPDATE_ACCESS_CONTROL)
 	@RequestMapping(value = APIConstant.ACCESS_CONTROL_UPDATE, method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> updateAccessControl(@PathVariable Long id, @RequestBody APIAccessControl accessControl)

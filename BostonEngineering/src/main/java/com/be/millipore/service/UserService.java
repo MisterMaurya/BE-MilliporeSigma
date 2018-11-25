@@ -56,4 +56,6 @@ public interface UserService {
 
 	// check Reset OTP Link Expired is expired or not
 	public ResponseEntity<?> isOTPResetLinkExpired(String email) throws JSONException;
+
+	public User findByEmailAndId(String email, Long id);
 }
