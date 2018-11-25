@@ -23,27 +23,37 @@ public interface UserService {
 
 	public User findByUsername(String username);
 
+	public boolean existsById(Long id);
+
 	public void updateUser(Long id);
 
-	public User getLineManager(Long lineManagerId); // Return All Manager
+	// Return All Manager
+	public User getLineManager(Long lineManagerId);
 
-	public ResponseEntity<?> changeStatus(User user) throws JSONException; // change user status
+	// change user status
+	public ResponseEntity<?> changeStatus(User user) throws JSONException;
 
-	public ResponseEntity<?> validateUser(User user) throws JSONException; // check all validation with user
+	// check all validation with user
+	public ResponseEntity<?> validateUser(User user) throws JSONException;
 
-	public List<User> getAllActiveManager(); // Return All Manager have status Active('Y')
+	// Return All Manager have status Active
+	public List<User> getAllActiveManager();
 
-	JSONObject getOneUser(Long id) throws JSONException; // get One user with additional details
+	// get One user with additional details
+	JSONObject getOneUser(Long id) throws JSONException; //
 
-	public ResponseEntity<?> verfityUser(ResetPasswordDto userDto) throws JSONException; // verify user
+	// verify user
+	public ResponseEntity<?> verfityUser(ResetPasswordDto resetPasswordDto) throws JSONException;
 
-	public ResponseEntity<?> forgotPassword(ResetPasswordDto userDto) throws JSONException; // forgot password
+	// forgot password
+	public ResponseEntity<?> forgotPassword(ResetPasswordDto resetPasswordDto) throws JSONException;
 
-	public ResponseEntity<?> updatePassword(Long id, String password) throws JSONException; // update password
+	// update password
+	public ResponseEntity<?> updatePassword(Long id, String password) throws JSONException;
 
-	public ResponseEntity<?> sendOtpForForgotPassword(String email) throws JSONException; // send OTP for forgot
-																							// password
+	// send OTP for forgot password
+	public ResponseEntity<?> sendOtpForForgotPassword(String email) throws JSONException;
 
-	public ResponseEntity<?> isOTPResetLinkExpired(String email) throws JSONException; // check Reset OTP Link Expired
-																						// is expired or not
+	// check Reset OTP Link Expired is expired or not
+	public ResponseEntity<?> isOTPResetLinkExpired(String email) throws JSONException;
 }

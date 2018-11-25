@@ -29,7 +29,6 @@ import com.be.millipore.enums.IsExpired;
 import com.be.millipore.repository.UserRepo;
 import com.be.millipore.service.DepartmentService;
 import com.be.millipore.service.EmailService;
-import com.be.millipore.service.OrganisationService;
 import com.be.millipore.service.UserRoleService;
 import com.be.millipore.service.UserService;
 import com.sendgrid.Response;
@@ -51,9 +50,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Autowired
 	private DepartmentService departmentService;
-
-	@Autowired
-	private OrganisationService organisationService;
 
 	@Override
 	public User save(User user) {
@@ -232,37 +228,37 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public JSONObject getOneUser(Long id) throws JSONException {
-		boolean isExists = false;
 		JSONObject jsonObject = new JSONObject();
 		JSONObject temp = null;
 
 		JSONArray jsonArray = new JSONArray();
-		isExists = userRepo.findById(id).isPresent();
-		if (isExists == false) {
-			return null;
-		}
+		User existingUser = findById(id);
 
-		User user = userRepo.findById(id).get();
-
-		jsonObject.put(DBConstant.USERNAME, user.getUsername());
-		jsonObject.put(DBConstant.EMAIL, user.getEmail());
-		jsonObject.put(DBConstant.FULL_NAME, user.getFullName());
-		jsonObject.put(DBConstant.DEPARTMENT_NAME, departmentService.findById(user.getDepartment().getId()).getName());
-		jsonObject.put(DBConstant.COUNTRY_CODE, user.getCountryCode());
-		jsonObject.put(DBConstant.MOBILE, user.getMobile());
-		jsonObject.put(DBConstant.LINE_MANAGER_ID, user.getLineManagerId());
-		jsonObject.put(DBConstant.IS_ACTIVE, user.getIsActive());
+		jsonObject.put(DBConstant.USERNAME, existingUser.getUsername());
+		jsonObject.put(DBConstant.EMAIL, existingUser.getEmail());
+		jsonObject.put(DBConstant.FULL_NAME, existingUser.getFullName());
+		jsonObject.put(DBConstant.DEPARTMENT_NAME,
+				departmentService.findById(existingUser.getDepartment().getId()).getName());
+		jsonObject.put(DBConstant.COUNTRY_CODE, existingUser.getCountryCode());
+		jsonObject.put(DBConstant.MOBILE, existingUser.getMobile());
+		jsonObject.put(DBConstant.LINE_MANAGER_ID, existingUser.getLineManagerId());
+		jsonObject.put(DBConstant.IS_ACTIVE, existingUser.getIsActive());
 		jsonObject.put(DBConstant.ORGANISATION_NAME,
-				departmentService.findById(user.getDepartment().getId()).getOrganisation().getName());
-		for (UserRole userRole : user.getRole()) {
+				departmentService.findById(existingUser.getDepartment().getId()).getOrganisation().getName());
+		for (UserRole userRole : existingUser.getRole()) {
 			temp = new JSONObject();
-			temp.put("userRoleId", userRole.getId());
-			temp.put("userRole", userRole.getRole());
+			temp.put(DBConstant.ROLE_ID, userRole.getId());
+			temp.put(DBConstant.ROLE, userRole.getRole());
+			if (userRole.getRole().equalsIgnoreCase(DBConstant.ROLE_OPERATOR)) {
+				User getManagerDetails = findById(existingUser.getLineManagerId());
+				jsonObject.put(DBConstant.MANAGER_NAME, getManagerDetails.getFullName());
+				jsonObject.put(DBConstant.MANAGER_EMAIL, getManagerDetails.getEmail());
+				jsonObject.put(DBConstant.MANAGER_MOBILE, getManagerDetails.getMobile());
+			}
 			jsonArray.put(temp);
 			temp = null;
 		}
-		jsonObject.put("role", jsonArray);
-
+		jsonObject.put(DBConstant.ROLE, jsonArray);
 		return jsonObject;
 	}
 
@@ -471,6 +467,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.LINK_EXPIRED);
 		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
 
+	}
+
+	@Override
+	public boolean existsById(Long id) {
+		return userRepo.existsById(id);
 	}
 
 }

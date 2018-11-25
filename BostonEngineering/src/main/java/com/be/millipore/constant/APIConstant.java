@@ -7,7 +7,7 @@ public class APIConstant {
 	public static final String MOBILE_NO_ALREADY_EXISTS = "Mobile no. already in use please use different mobile no.";
 	public static final String USER_SUCCESSFULLY_CREATED = "User successfully created";
 	public static final String USER_NOT_EXISTS = "Please enter valid user id. User id is not exists";
-	public static final String USERID_ALREADY_EXISTS = "UserId Already exists";
+	public static final String USERNAME_ALREADY_EXISTS = "Username Already exists";
 	public static final String ERROR_MESSAGE = "Error message";
 	public static final String USER_SUCCESSFULLY_UPDATED = "User successfully updated";
 	public static final String USER_CREATE_STATUS = "create";
@@ -48,6 +48,7 @@ public class APIConstant {
 	public static final String REST_TEMPLATE_URL = "/template";
 	public static final String REST_TASK_TEMPLATE_URL = "/task/template";
 	public static final String CREATE_TASK_TEMPLATE_URL = "/create";
+	public static final String REST_JSON_CONTENT_TYPE = "application/json";
 
 //*** USER API OPERATIONS ***//	
 

@@ -43,6 +43,7 @@ public class User {
 	private Department department;
 
 	public User() {
+
 	}
 
 	@Id

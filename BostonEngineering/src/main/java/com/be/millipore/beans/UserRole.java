@@ -28,7 +28,6 @@ public class UserRole {
 	}
 
 	@Column(name = DBConstant.ROLE, unique = true, nullable = false)
-	// @ApiModelProperty(hidden = true)
 	public String getRole() {
 		return role;
 	}

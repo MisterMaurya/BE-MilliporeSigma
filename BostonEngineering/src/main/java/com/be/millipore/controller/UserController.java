@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.be.millipore.beans.APIAccessControl;
 import com.be.millipore.beans.User;
-import com.be.millipore.beans.UserRole;
 import com.be.millipore.constant.APIConstant;
 import com.be.millipore.dto.ResetPasswordDto;
 import com.be.millipore.service.APIAccessControlService;
@@ -57,11 +56,11 @@ public class UserController {
 	 */
 
 	@ApiOperation(value = APIConstant.USER_CREATE, notes = APIConstant.USER_CREATE_NOTE)
-	// @PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
 			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
-	@RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.POST, produces = APIConstant.REST_JSON_CONTENT_TYPE, consumes = APIConstant.REST_JSON_CONTENT_TYPE)
 	public ResponseEntity<?> createUser(@RequestBody User user) throws JSONException {
 		JSONObject jsonObject = new JSONObject();
 		User existingUser = null;
@@ -69,7 +68,6 @@ public class UserController {
 		if (responseEntity != null) {
 			return responseEntity;
 		}
-
 		existingUser = userService.save(user);
 		System.out.println(existingUser.getFullName() + " Succeffully created");
 		return new ResponseEntity<>(
@@ -78,14 +76,16 @@ public class UserController {
 
 	}
 
-	// (2). ****** UPDATE A USER ****//
+	/**************************************************************************
+	 * (2). UPDATE A USER
+	 **************************************************************************/
 
 	@ApiOperation(value = APIConstant.USER_UPDATE)
 	@PreAuthorize("hasRole('ADMIN')")
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
 			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
-	@RequestMapping(value = APIConstant.REST_ID_PARAM, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = APIConstant.REST_ID_PARAM, method = RequestMethod.PUT, produces = APIConstant.REST_JSON_CONTENT_TYPE)
 	public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) throws JSONException {
 
 		JSONObject jsonObject = new JSONObject();
@@ -99,7 +99,9 @@ public class UserController {
 				HttpStatus.OK);
 	}
 
-	// (3). ****** GET ONE USER ****//
+	/**************************************************************************
+	 * (3). GET ONE USER
+	 **************************************************************************/
 
 	@ApiOperation(value = APIConstant.GET_ONE_USER)
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
@@ -108,26 +110,13 @@ public class UserController {
 	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = APIConstant.REST_ID_PARAM, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getOneUser(@PathVariable Long id) throws JSONException {
-		User existingUser = null;
-		JSONObject jsonObject = new JSONObject();
-		existingUser = userService.findById(id);
-		if (existingUser == null) {
 
+		JSONObject jsonObject = new JSONObject();
+		if (!userService.existsById(id)) {
 			jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.USER_NOT_EXISTS);
 			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
 		}
-
 		jsonObject = userService.getOneUser(id);
-		for (UserRole userRole : existingUser.getRole()) {
-			if (userRole.getRole().equals("Operator")) {
-				User getManagerDetails = userService.findById(existingUser.getLineManagerId());
-				jsonObject.put("Manager Name", getManagerDetails.getFullName());
-				jsonObject.put("Manager Email", getManagerDetails.getEmail());
-				jsonObject.put("Manager Mobile", getManagerDetails.getMobile());
-
-			}
-		}
-
 		return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
 	}
 
@@ -146,7 +135,7 @@ public class UserController {
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN), })
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getAllUser(Principal principal) throws JSONException {
-		JSONObject jsonObject = new JSONObject();
+		// JSONObject jsonObject = new JSONObject();
 		/*
 		 * APIAccessControl accessControl =
 		 * accessControlService.findByApiName(DBConstant.GET_ALL_USER_RESOURCE);
@@ -175,7 +164,7 @@ public class UserController {
 			@ApiResponse(code = 404, message = APIConstant.NOT_FOUND) })
 	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = APIConstant.REST_ID_STATUS
-			+ APIConstant.REST_ID_PARAM, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+			+ APIConstant.REST_ID_PARAM, method = RequestMethod.GET, produces = APIConstant.REST_JSON_CONTENT_TYPE)
 	public ResponseEntity<?> changeUserStatus(@PathVariable Long id) throws JSONException {
 		User user = null;
 		JSONObject jsonObject = new JSONObject();
@@ -196,6 +185,7 @@ public class UserController {
 	/**
 	 * @return all active line manger
 	 */
+
 	@ApiOperation(value = APIConstant.GET_ALL_ACIVE_MANAGER)
 	@PreAuthorize("hasRole('ADMIN')")
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
@@ -225,7 +215,9 @@ public class UserController {
 		return userService.verfityUser(userDto);
 	}
 
-// (9). SEND OTP FOR FORGOT PASSWORD  
+	/**************************************************************************
+	 * (8). SEND OTP FOR FORGOT PASSWORD
+	 **************************************************************************/
 
 	@ApiOperation(value = APIConstant.SEND_OTP_FOR_FORGOT_PASSWORD)
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
@@ -236,8 +228,15 @@ public class UserController {
 		return userService.sendOtpForForgotPassword(email);
 	}
 
-// (8). FORGOT PASSWORD 
+	/**************************************************************************
+	 * (9). FORGOT PASSWORD
+	 **************************************************************************/
 
+	/**
+	 * @param userDto
+	 * @return Response code 200 if User reset our password
+	 * @throws JSONException
+	 */
 	@ApiOperation(value = APIConstant.FORGOT_PASSWORD)
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
@@ -266,7 +265,9 @@ public class UserController {
 		return userService.updatePassword(id, password);
 	}
 
-// (11). RESET LINK VALIDATE	
+	/**************************************************************************
+	 * (11). RESET LINK VALIDATE
+	 **************************************************************************/
 
 	@ApiOperation(value = APIConstant.RESET_LINK_VALIDATE)
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
@@ -277,7 +278,9 @@ public class UserController {
 		return userService.isOTPResetLinkExpired(email);
 	}
 
-// (12). UPDATE ACCESS CONTROL
+	/**************************************************************************
+	 * (12). UPDATE ACCESS CONTROL
+	 **************************************************************************/
 
 	@ApiOperation(value = APIConstant.UPDATE_ACCESS_CONTROL)
 	@RequestMapping(value = APIConstant.ACCESS_CONTROL_UPDATE, method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")

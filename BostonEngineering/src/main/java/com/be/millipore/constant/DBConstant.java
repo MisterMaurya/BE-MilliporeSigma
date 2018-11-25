@@ -46,4 +46,9 @@ public class DBConstant {
 	public static final String NOT_GENERATE = "not generate";
 	public static final String ROLE_MANAGER = "MANAGER";
 
+	// MANAGER
+	public static final String MANAGER_NAME = "manager_name";
+	public static final String MANAGER_EMAIL = "manager_email";
+	public static final String MANAGER_MOBILE = "manager_mobile";
+
 }
