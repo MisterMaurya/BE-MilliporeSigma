@@ -51,4 +51,10 @@ public class DBConstant {
 	public static final String MANAGER_EMAIL = "manager_email";
 	public static final String MANAGER_MOBILE = "manager_mobile";
 
+	// TEMPLATE KEY
+	public static final String USER_KEY = "user";
+	public static final String USER_DEPARTMENT_KEY = "user.department";
+	public static final String USER_ORGANISATION_KEY = "user.organisation";
+	public static final String ORGANISATION_KEY = "organisation";
+
 }

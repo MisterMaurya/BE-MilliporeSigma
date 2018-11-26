@@ -16,4 +16,6 @@ public interface TemplateService {
 
 	public Object getValue(Class<?> bean, String field, Object object) throws Exception;
 
+	public String keyNotFound();
+
 }

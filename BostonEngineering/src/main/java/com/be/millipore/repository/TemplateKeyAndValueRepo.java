@@ -9,4 +9,5 @@ import com.be.millipore.beans.TemplateKeyAndValue;
 public interface TemplateKeyAndValueRepo extends CrudRepository<TemplateKeyAndValue, Long> {
 
 	public TemplateKeyAndValue findByFieldKey(String key);
+
 }

@@ -3,7 +3,6 @@ package com.be.millipore.dto;
 public class TemplateDto {
 
 	private Long userId;
-	private Long departmentId;
 	private Long organisationId;
 
 	public Long getUserId() {
@@ -12,14 +11,6 @@ public class TemplateDto {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
-	}
-
-	public Long getDepartmentId() {
-		return departmentId;
-	}
-
-	public void setDepartmentId(Long departmentId) {
-		this.departmentId = departmentId;
 	}
 
 	public Long getOrganisationId() {

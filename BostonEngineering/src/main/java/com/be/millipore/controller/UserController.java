@@ -149,7 +149,7 @@ public class UserController {
 	@ApiResponses(value = { @ApiResponse(code = 401, message = APIConstant.NOT_AUTHORIZED),
 			@ApiResponse(code = 403, message = APIConstant.FORBIDDEN),
 			@ApiResponse(code = 500, message = APIConstant.INTERNAL_SERVER_ERROR) })
-	@RequestMapping(method = RequestMethod.GET, produces = APIConstant.REST_JSON_CONTENT_TYPE, consumes = APIConstant.REST_JSON_CONTENT_TYPE)
+	@RequestMapping(method = RequestMethod.GET, produces = { APIConstant.REST_JSON_CONTENT_TYPE })
 	public ResponseEntity<?> getAllUser(Principal principal) throws JSONException {
 		// JSONObject jsonObject = new JSONObject();
 		/*
