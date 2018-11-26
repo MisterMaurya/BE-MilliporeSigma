@@ -127,5 +127,6 @@ public class APIConstant {
 	public static final String NOT_FOUND_DEPT_OR_ORG = "Not able to find Department/Organisation";
 	public static final String KEY_NOT_FOUND = " key not found";
 	public static final String ORGANISATION_NOT_EXISTS = "organisation not exists";
+	public static final String USER_NOT_LOGGED_IN = "Please login first";
 
 }

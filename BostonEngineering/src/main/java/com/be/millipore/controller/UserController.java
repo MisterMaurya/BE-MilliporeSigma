@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.be.millipore.beans.APIAccessControl;
 import com.be.millipore.beans.User;
 import com.be.millipore.constant.APIConstant;
+import com.be.millipore.constant.DBConstant;
 import com.be.millipore.dto.ResetPasswordDto;
 import com.be.millipore.service.APIAccessControlService;
 import com.be.millipore.service.UserService;
@@ -151,16 +152,18 @@ public class UserController {
 			@ApiResponse(code = 500, message = APIConstant.INTERNAL_SERVER_ERROR) })
 	@RequestMapping(method = RequestMethod.GET, produces = { APIConstant.REST_JSON_CONTENT_TYPE })
 	public ResponseEntity<?> getAllUser(Principal principal) throws JSONException {
-		// JSONObject jsonObject = new JSONObject();
-		/*
-		 * APIAccessControl accessControl =
-		 * accessControlService.findByApiName(DBConstant.GET_ALL_USER_RESOURCE);
-		 * ResponseEntity<?> responseEntity =
-		 * accessControlService.accessControl(accessControl, principal); if
-		 * (responseEntity.getStatusCode() != HttpStatus.OK) {
-		 * jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.FORBIDDEN); return new
-		 * ResponseEntity<>(jsonObject.toString(), HttpStatus.UNAUTHORIZED); }
-		 */
+		JSONObject jsonObject = new JSONObject();
+		if (principal == null) {
+			jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.USER_NOT_LOGGED_IN);
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.BAD_REQUEST);
+		}
+		APIAccessControl accessControl = accessControlService.findByApiName(DBConstant.GET_ALL_USER_RESOURCE);
+		ResponseEntity<?> responseEntity = accessControlService.accessControl(accessControl, principal);
+		if (responseEntity.getStatusCode() != HttpStatus.OK) {
+			jsonObject.put(APIConstant.ERROR_MESSAGE, APIConstant.FORBIDDEN);
+			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.UNAUTHORIZED);
+		}
+
 		return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
 	}
 

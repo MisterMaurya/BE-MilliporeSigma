@@ -1,25 +1,35 @@
 package com.be.millipore.beans;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.be.millipore.constant.DBConstant;
+import com.be.millipore.enums.AdminAccessAPI;
+import com.be.millipore.enums.ManagerAccessAPI;
+import com.be.millipore.enums.OperatorAccessAPI;
 
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
+@Table(name = DBConstant.API_ACCESS_CONTROL_MASTER)
 public class APIAccessControl {
+
+	private Long id;
+	private String apiName;
+	private AdminAccessAPI adminAccessAPI;
+	private ManagerAccessAPI managerAccessAPI;
+	private OperatorAccessAPI operatorAccessAPI;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	
-	private Long id;
+	@Column(name = DBConstant.API_ACCESS_ID)
 	@ApiModelProperty(hidden = true)
-	private String apiName;
-	private String adminAccess;
-	private String managerAccess;
-	private String operatorAccess;
-
 	public Long getId() {
 		return id;
 	}
@@ -28,6 +38,7 @@ public class APIAccessControl {
 		this.id = id;
 	}
 
+	@Column(name = DBConstant.API_NAME, unique = true)
 	public String getApiName() {
 		return apiName;
 	}
@@ -36,28 +47,34 @@ public class APIAccessControl {
 		this.apiName = apiName;
 	}
 
-	public String getAdminAccess() {
-		return adminAccess;
+	@Column(name = DBConstant.ADMIN_ACCESS)
+	@Enumerated(EnumType.STRING)
+	public AdminAccessAPI getAdminAccessAPI() {
+		return adminAccessAPI;
 	}
 
-	public void setAdminAccess(String adminAccess) {
-		this.adminAccess = adminAccess;
+	public void setAdminAccessAPI(AdminAccessAPI adminAccessAPI) {
+		this.adminAccessAPI = adminAccessAPI;
 	}
 
-	public String getManagerAccess() {
-		return managerAccess;
+	@Column(name = DBConstant.MANAGER_ACCESS)
+	@Enumerated(EnumType.STRING)
+	public ManagerAccessAPI getManagerAccessAPI() {
+		return managerAccessAPI;
 	}
 
-	public void setManagerAccess(String managerAccess) {
-		this.managerAccess = managerAccess;
+	public void setManagerAccessAPI(ManagerAccessAPI managerAccessAPI) {
+		this.managerAccessAPI = managerAccessAPI;
 	}
 
-	public String getOperatorAccess() {
-		return operatorAccess;
+	@Column(name = DBConstant.OPERATOR_ACCESS)
+	@Enumerated(EnumType.STRING)
+	public OperatorAccessAPI getOperatorAccessAPI() {
+		return operatorAccessAPI;
 	}
 
-	public void setOperatorAccess(String operatorAccess) {
-		this.operatorAccess = operatorAccess;
+	public void setOperatorAccessAPI(OperatorAccessAPI operatorAccessAPI) {
+		this.operatorAccessAPI = operatorAccessAPI;
 	}
 
 }

@@ -8,7 +8,6 @@ import com.be.millipore.beans.APIAccessControl;
 @Repository
 public interface APIAccessControlRepo extends CrudRepository<APIAccessControl, Long> {
 
-	// find API name
 	public APIAccessControl findByApiName(String apiName);
 
 }

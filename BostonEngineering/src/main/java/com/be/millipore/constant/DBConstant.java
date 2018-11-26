@@ -56,5 +56,12 @@ public class DBConstant {
 	public static final String USER_DEPARTMENT_KEY = "user.department";
 	public static final String USER_ORGANISATION_KEY = "user.organisation";
 	public static final String ORGANISATION_KEY = "organisation";
+	public static final String API_ACCESS_ID = "api_access_id";
+	public static final String API_NAME = "api_name";
+	public static final String ADMIN_ACCESS = "admin_access";
+	public static final String MANAGER_ACCESS = "manager_access";
+	public static final String OPERATOR_ACCESS = "operator_access";
+
+	public static final String API_ACCESS_CONTROL_MASTER = "api_access_control_master";
 
 }

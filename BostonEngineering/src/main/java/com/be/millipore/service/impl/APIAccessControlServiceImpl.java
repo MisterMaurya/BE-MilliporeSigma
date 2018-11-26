@@ -35,25 +35,21 @@ public class APIAccessControlServiceImpl implements APIAccessControlService {
 	@Override
 	public ResponseEntity<?> accessControl(APIAccessControl accessControl, Principal principal) throws JSONException {
 
-		ArrayList<String> roleslist = new ArrayList<>();
-		if (accessControl.getAdminAccess().length() > 0)
-			roleslist.add(accessControl.getAdminAccess());
-		if (accessControl.getManagerAccess().length() > 0)
-			roleslist.add(accessControl.getManagerAccess());
-		if (accessControl.getOperatorAccess().length() > 0)
-			roleslist.add(accessControl.getOperatorAccess());
-
-		roleslist.add(accessControl.getOperatorAccess());
-
+		ArrayList<String> access = new ArrayList<>();
+		access.add(accessControl.getAdminAccessAPI().toString());
+		access.add(accessControl.getManagerAccessAPI().toString());
+		access.add(accessControl.getOperatorAccessAPI().toString());
 		User existingUser = userService.findByUsername(principal.getName());
 		for (UserRole role : existingUser.getRole()) {
-			for (String dbRole : roleslist) {
-				if (role.getRole().equalsIgnoreCase(dbRole)) {
+			for (String userRole : access) {
+				if (role.getRole().equalsIgnoreCase(userRole)) {
 					return new ResponseEntity<>(HttpStatus.OK);
 				}
 			}
 		}
+
 		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
 	}
 
 	@Override
